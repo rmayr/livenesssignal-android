@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/LivenessSignal.iml" filepath="$PROJECT_DIR$/.idea/modules/LivenessSignal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Liveness_Signal.iml" filepath="$PROJECT_DIR$/.idea/modules/Liveness_Signal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Liveness_Signal.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Liveness_Signal.app.iml" />
     </modules>
   </component>
 </project>

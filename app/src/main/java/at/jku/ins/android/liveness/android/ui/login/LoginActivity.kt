@@ -27,8 +27,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val username = binding.username
-        val password = binding.password
+        val username = binding.server
+        val password = binding.appPassword
         val login = binding.login
         val loading = binding.loading
 
@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
-            // disable login button unless both username / password is valid
+            // disable login button unless both server / appPassword is valid
             login.isEnabled = loginState.isDataValid
 
             if (loginState.usernameError != null) {
