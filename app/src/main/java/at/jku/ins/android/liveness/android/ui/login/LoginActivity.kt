@@ -1,6 +1,7 @@
 package at.jku.ins.android.liveness.android.ui.login
 
 import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -15,6 +16,7 @@ import android.widget.Toast
 import at.jku.ins.android.liveness.android.databinding.ActivityLoginBinding
 
 import at.jku.ins.android.liveness.android.R
+import at.jku.ins.android.liveness.android.SettingsActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -99,14 +101,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
         val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            applicationContext,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
+
+        startActivity(Intent(this, SettingsActivity::class.java))
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
