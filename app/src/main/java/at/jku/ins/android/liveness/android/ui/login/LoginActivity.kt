@@ -13,7 +13,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
-import at.jku.ins.android.liveness.android.MainActivity
+import at.jku.ins.android.liveness.android.ui.main.MainActivity
 import at.jku.ins.android.liveness.android.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {

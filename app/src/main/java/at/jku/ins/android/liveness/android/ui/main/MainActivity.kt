@@ -1,14 +1,13 @@
-package at.jku.ins.android.liveness.android
+package at.jku.ins.android.liveness.android.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
-import at.jku.ins.android.liveness.android.ui.main.SectionsPagerAdapter
+import android.view.View
 import at.jku.ins.android.liveness.android.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -33,4 +32,9 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
         }
     }
+
+    fun startSettings(view: View) {
+        startActivity(Intent(this, SettingsActivity::class.java))
+    }
+
 }
