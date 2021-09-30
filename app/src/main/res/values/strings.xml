@@ -3,6 +3,7 @@
     <!-- Strings related to login -->
     <string name="prompt_server">Liveness Server</string>
     <string name="prompt_app_password">App Password</string>
+    <string name="prompt_signal_password">Signal Password</string>
     <string name="action_start">Start</string>
     <string name="action_start_short">Start</string>
     <string name="welcome">"Welcome !"</string>
