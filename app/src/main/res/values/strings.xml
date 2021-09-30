@@ -26,4 +26,9 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <!-- Main Preferences -->
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_text_1">Check</string>
+    <string name="tab_text_2">Send</string>
 </resources>

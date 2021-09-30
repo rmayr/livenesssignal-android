@@ -13,10 +13,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
+import at.jku.ins.android.liveness.android.MainActivity
 import at.jku.ins.android.liveness.android.databinding.ActivityLoginBinding
-
-import at.jku.ins.android.liveness.android.R
-import at.jku.ins.android.liveness.android.SettingsActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -103,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
     private fun updateUiWithUser(model: LoggedInUserView) {
         val displayName = model.displayName
 
-        startActivity(Intent(this, SettingsActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
