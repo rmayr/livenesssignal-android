@@ -13,19 +13,18 @@
     <string name="title_activity_settings">Liveness Settings</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="messages_header">Server settings</string>
+    <string name="sync_header">Password settings</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
+    <string name="signature_title">Default server</string>
     <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="sync_title">Require app password to log in</string>
+    <string name="attachment_title">Lock app with biometrics</string>
+    <string name="attachment_summary_on">Unlock with on-device biometrics</string>
+    <string name="attachment_summary_off">Ask app password on every login</string>
 
     <!-- Main Preferences -->
     <string name="title_activity_main">MainActivity</string>
