@@ -1,4 +1,4 @@
-package at.jku.ins.android.liveness.android.data.model
+package at.jku.ins.liveness.android.data.model
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository

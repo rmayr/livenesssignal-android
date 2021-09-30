@@ -1,4 +1,4 @@
-package at.jku.ins.android.liveness.android.ui.main
+package at.jku.ins.liveness.android.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import at.jku.ins.android.liveness.android.R
-import at.jku.ins.android.liveness.android.databinding.FragmentMainBinding
+import at.jku.ins.liveness.android.databinding.FragmentMainBinding
 
 /**
  * A placeholder fragment containing a simple view.

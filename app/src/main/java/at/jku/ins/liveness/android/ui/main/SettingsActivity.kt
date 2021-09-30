@@ -1,9 +1,9 @@
-package at.jku.ins.android.liveness.android.ui.main
+package at.jku.ins.liveness.android.ui.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
-import at.jku.ins.android.liveness.android.R
+import at.jku.ins.liveness.android.R
 
 class SettingsActivity : AppCompatActivity() {
 

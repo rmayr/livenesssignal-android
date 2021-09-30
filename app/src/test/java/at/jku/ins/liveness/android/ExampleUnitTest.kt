@@ -1,4 +1,4 @@
-package at.jku.ins.android.liveness.android
+package at.jku.ins.liveness.android
 
 import org.junit.Test
 

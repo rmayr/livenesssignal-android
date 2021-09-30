@@ -1,9 +1,9 @@
-package at.jku.ins.android.liveness.android.ui.login
+package at.jku.ins.liveness.android.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import at.jku.ins.android.liveness.android.data.LoginDataSource
-import at.jku.ins.android.liveness.android.data.LoginRepository
+import at.jku.ins.liveness.android.data.LoginDataSource
+import at.jku.ins.liveness.android.data.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

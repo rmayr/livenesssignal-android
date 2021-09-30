@@ -1,6 +1,6 @@
-package at.jku.ins.android.liveness.android.data
+package at.jku.ins.liveness.android.data
 
-import at.jku.ins.android.liveness.android.data.model.LoggedInUser
+import at.jku.ins.liveness.android.data.model.LoggedInUser
 import java.io.IOException
 
 /**

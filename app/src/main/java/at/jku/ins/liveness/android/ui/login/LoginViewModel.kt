@@ -1,13 +1,13 @@
-package at.jku.ins.android.liveness.android.ui.login
+package at.jku.ins.liveness.android.ui.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
-import at.jku.ins.android.liveness.android.data.LoginRepository
-import at.jku.ins.android.liveness.android.data.Result
+import at.jku.ins.liveness.android.data.LoginRepository
+import at.jku.ins.liveness.android.data.Result
 
-import at.jku.ins.android.liveness.android.R
+import at.jku.ins.liveness.android.R
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 

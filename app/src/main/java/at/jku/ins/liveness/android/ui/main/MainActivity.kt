@@ -1,14 +1,13 @@
-package at.jku.ins.android.liveness.android.ui.main
+package at.jku.ins.liveness.android.ui.main
 
 import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
-import at.jku.ins.android.liveness.android.databinding.ActivityMainBinding
+import at.jku.ins.liveness.android.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,14 +26,19 @@ class MainActivity : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
         val fab: FloatingActionButton = binding.fab
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+        fab.setOnClickListener { view -> startSignalAction(view) }
     }
 
     fun startSettings(view: View) {
         startActivity(Intent(this, SettingsActivity::class.java))
     }
 
+    fun startSignalAction(view: View) {
+        /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            .setAction("Action", null).show() */
+
+        val serverUrl = "http://localhost:8080/liveness"
+        //val client = ClientBuilder.newClient();
+        //val livenessTarget = client.target(URL);
+    }
 }

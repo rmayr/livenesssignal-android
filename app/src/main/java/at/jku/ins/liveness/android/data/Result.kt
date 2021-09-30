@@ -1,4 +1,4 @@
-package at.jku.ins.android.liveness.android.data
+package at.jku.ins.liveness.android.data
 
 /**
  * A generic class that holds a value with its loading status.

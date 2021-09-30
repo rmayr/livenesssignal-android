@@ -1,10 +1,9 @@
-package at.jku.ins.android.liveness.android.ui.main
+package at.jku.ins.liveness.android.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 
 class PageViewModel : ViewModel() {
 

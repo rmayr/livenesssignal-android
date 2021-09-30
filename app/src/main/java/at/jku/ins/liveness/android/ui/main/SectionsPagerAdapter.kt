@@ -1,10 +1,10 @@
-package at.jku.ins.android.liveness.android.ui.main
+package at.jku.ins.liveness.android.ui.main
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import at.jku.ins.android.liveness.android.R
+import at.jku.ins.liveness.android.R
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_text_1,

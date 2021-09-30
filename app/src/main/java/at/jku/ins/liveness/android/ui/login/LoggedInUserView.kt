@@ -1,4 +1,4 @@
-package at.jku.ins.android.liveness.android.ui.login
+package at.jku.ins.liveness.android.ui.login
 
 /**
  * User details post authentication that is exposed to the UI
