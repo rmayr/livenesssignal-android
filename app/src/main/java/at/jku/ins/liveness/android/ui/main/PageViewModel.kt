@@ -6,13 +6,16 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 
 class PageViewModel : ViewModel() {
+    private val _textBuilder = StringBuilder()
+    val text = MutableLiveData<String>()
 
-    private val _index = MutableLiveData<Int>()
-    val text: LiveData<String> = Transformations.map(_index) {
-        "Hello from section: $it"
+    fun setText(newText: String) {
+        _textBuilder.clear()
+        addLine(newText)
     }
 
-    fun setIndex(index: Int) {
-        _index.value = index
+    fun addLine(addText: String) {
+        _textBuilder.append(addText).append('\n')
+        text.value = _textBuilder.toString()
     }
 }

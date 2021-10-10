@@ -16,16 +16,15 @@ import at.jku.ins.liveness.android.databinding.FragmentSendBinding
  */
 class SendFragment : Fragment() {
 
-    //private lateinit var pageViewModel: PageViewModel
+    private lateinit var pageViewModel: PageViewModel
     private var _binding: FragmentSendBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*pageViewModel = ViewModelProvider(this).get(PageViewModel::class.java).apply {
+        pageViewModel = ViewModelProvider(this).get(PageViewModel::class.java) /*.apply {
             setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
         }*/
     }
@@ -37,6 +36,10 @@ class SendFragment : Fragment() {
 
         _binding = FragmentSendBinding.inflate(inflater, container, false)
         val root = binding.root
+        val textView: TextView = binding.sendLogView
+        pageViewModel.text.observe(viewLifecycleOwner, Observer {
+            textView.text = it
+        })
 
         val sendBtn = binding.buttonSend as Button
         sendBtn.setOnClickListener {
@@ -46,38 +49,12 @@ class SendFragment : Fragment() {
         return root
     }
 
-    companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        @JvmStatic
-        fun newInstance(sectionNumber: Int): SendFragment {
-            return SendFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
-                }
-            }
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     fun startSend(view: View) {
-        val textView: TextView = binding.sendLogView
-        /*pageViewModel.text.observe(viewLifecycleOwner, Observer {
-            verifyLogView.text = it
-        })*/
-
-        textView.text = "Something interesting happening during sending"
+        pageViewModel.setText("Starting request ...")
     }
 }
