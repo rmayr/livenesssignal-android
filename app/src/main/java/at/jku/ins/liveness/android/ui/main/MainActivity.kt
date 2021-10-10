@@ -13,6 +13,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private val TAG = "LivenessSignal"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -24,9 +26,10 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
-        val fab: FloatingActionButton = binding.fab
 
-        fab.setOnClickListener { view -> startSignalAction(view) }
+        /*val fab: FloatingActionButton = binding.fab
+
+        fab.setOnClickListener { view -> startSignalAction(view) }*/
     }
 
     fun startSettings(view: View) {
@@ -34,11 +37,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startSignalAction(view: View) {
-        /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-            .setAction("Action", null).show() */
+        //val tabLayout = findViewById<View>(R.id.tabs) as TabLayout
+        //val selectedTabPosition = tabLayout.selectedTabPosition
+        /*Snackbar.make(view, "Acting on tab " + selectedTabPosition, Snackbar.LENGTH_LONG)
+            .setAction("Action", null).show()*/
 
-        val serverUrl = "http://localhost:8080/liveness"
-        //val client = ClientBuilder.newClient();
-        //val livenessTarget = client.target(URL);
+        //Log.v(TAG, tabLayout.toString())
     }
 }

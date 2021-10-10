@@ -8,15 +8,15 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import at.jku.ins.liveness.android.databinding.FragmentMainBinding
+import at.jku.ins.liveness.android.databinding.FragmentSendBinding
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class PlaceholderFragment : Fragment() {
+class SendFragment : Fragment() {
 
     private lateinit var pageViewModel: PageViewModel
-    private var _binding: FragmentMainBinding? = null
+    private var _binding: FragmentSendBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -34,7 +34,7 @@ class PlaceholderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentSendBinding.inflate(inflater, container, false)
         val root = binding.root
 
         val textView: TextView = binding.sectionLabel
@@ -56,8 +56,8 @@ class PlaceholderFragment : Fragment() {
          * number.
          */
         @JvmStatic
-        fun newInstance(sectionNumber: Int): PlaceholderFragment {
-            return PlaceholderFragment().apply {
+        fun newInstance(sectionNumber: Int): SendFragment {
+            return SendFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SECTION_NUMBER, sectionNumber)
                 }

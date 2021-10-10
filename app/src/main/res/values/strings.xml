@@ -31,4 +31,11 @@
     <string name="tab_text_1">Check</string>
     <string name="tab_text_2">Send</string>
     <string name="button_settings">Settings</string>
+
+    <!-- Verify fragment -->
+    <string name="button_check_signals">Check for signals</string>
+
+    <!-- Send fragment -->
+    <string name="text_send_signal">Enter new signal text</string>
+    <string name="button_send_signal">Send new signal</string>
 </resources>
