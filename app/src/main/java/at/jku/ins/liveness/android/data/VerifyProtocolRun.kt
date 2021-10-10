@@ -20,7 +20,7 @@ import jakarta.ws.rs.core.Response
 import java.security.SecureRandom
 
 class VerifyProtocolRun : ProtocolRun {
-    private val serverUrl = "https://192.168.64.22:8080/liveness"
+    private val serverUrl = "http://192.168.64.22:8080/liveness"
 
     override suspend fun makeRequest(viewModel: PageViewModel): Result<String> {
         val client = ClientBuilder.newClient();
