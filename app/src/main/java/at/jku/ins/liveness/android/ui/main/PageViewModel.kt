@@ -19,9 +19,9 @@ class PageViewModel : ViewModel() {
         text.postValue(_textBuilder.toString())
     }
 
-    fun runNetworkRequest(protocol: ProtocolRun) {
+    fun runNetworkRequest(protocol: ProtocolRun, viewModel: PageViewModel = this) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = protocol.makeRequest()
+            val result = protocol.makeRequest(viewModel)
             when (result) {
                 //is Result.Success<String> -> addLine("Yeah")
                 else -> addLine("Error" + result)
