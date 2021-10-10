@@ -9,18 +9,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import at.jku.ins.liveness.android.data.VerifyProtocolRun
 import at.jku.ins.liveness.android.databinding.FragmentVerifyBinding
-
-//import at.jku.ins.liveness.protocol.ChallengeMessage
-
-import jakarta.ws.rs.client.Client
-import jakarta.ws.rs.client.ClientBuilder
-import jakarta.ws.rs.client.Invocation
-import jakarta.ws.rs.client.WebTarget
-import jakarta.ws.rs.core.MediaType
-import jakarta.ws.rs.core.NewCookie
-import jakarta.ws.rs.core.Response
-
 
 /**
  * A placeholder fragment containing a simple view.
@@ -67,22 +57,6 @@ class VerifyFragment : Fragment() {
 
     fun startVerify(view: View) {
         pageViewModel.setText("Starting request ...")
-
-        val serverUrl = "https://192.168.64.22:8080/liveness"
-        val client = ClientBuilder.newClient();
-        val livenessTarget = client.target(serverUrl);
-        val challengeTarget = livenessTarget.path("challenge")
-        val challengeBuilder = challengeTarget.request(MediaType.APPLICATION_JSON)
-        /*val res = challengeBuilder.get(Response::class.java)
-        val cookies = res.cookies
-        //val challenge: ChallengeMessage = res.readEntity(ChallengeMessage::class.java)*/
-
-        pageViewModel.addLine(challengeBuilder.toString())
+        pageViewModel.runNetworkRequest(VerifyProtocolRun())
     }
-}
-
-// code from https://developer.android.com/kotlin/coroutines
-sealed class Result<out R> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
 }

@@ -1,9 +1,9 @@
 package at.jku.ins.liveness.android.ui.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import at.jku.ins.liveness.android.data.ProtocolRun
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PageViewModel : ViewModel() {
     private val _textBuilder = StringBuilder()
@@ -16,6 +16,16 @@ class PageViewModel : ViewModel() {
 
     fun addLine(addText: String) {
         _textBuilder.append(addText).append('\n')
-        text.value = _textBuilder.toString()
+        text.postValue(_textBuilder.toString())
+    }
+
+    fun runNetworkRequest(protocol: ProtocolRun) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = protocol.makeRequest()
+            when (result) {
+                //is Result.Success<String> -> addLine("Yeah")
+                else -> addLine("Error" + result)
+            }
+        }
     }
 }
