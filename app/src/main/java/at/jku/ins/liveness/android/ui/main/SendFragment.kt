@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import at.jku.ins.liveness.android.data.SendProtocolRun
 import at.jku.ins.liveness.android.databinding.FragmentSendBinding
 
 /**
@@ -56,5 +57,6 @@ class SendFragment : Fragment() {
 
     fun startSend(view: View) {
         pageViewModel.setText("Starting request ...")
+        pageViewModel.runNetworkRequest(SendProtocolRun(binding.newSignal.text.toString()))
     }
 }
