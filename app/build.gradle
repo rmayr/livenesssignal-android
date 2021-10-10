@@ -26,6 +26,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        exclude 'META-INF/NOTICE.md'
+        exclude 'META-INF/NOTICE.markdown'
+        exclude 'META-INF/LICENSE.md'
+    }
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -36,7 +41,15 @@ android {
 
 dependencies {
     // include local libraries from within the app source tree - TODO: remove again when the liveness lib can be fetched from a Maven repository
-    implementation fileTree(dir: 'app/libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //implementation files('libs/liveness-library-0.0.1.jar')
+    // these are dependencies of the liveness lib
+    implementation 'org.bouncycastle:bcprov-jdk14:1.69'
+    //implementation 'jakarta.activation:jakarta.activation-api:2.0.1'
+    //implementation 'org.eclipse.jetty:jetty-util:11.0.6'
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.0.0'
+    implementation 'org.glassfish.jersey.core:jersey-server:3.0.2'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:3.0.2'
 
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'

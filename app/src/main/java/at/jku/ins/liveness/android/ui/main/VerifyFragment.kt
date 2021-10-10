@@ -11,6 +11,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import at.jku.ins.liveness.android.databinding.FragmentVerifyBinding
 
+//import at.jku.ins.liveness.protocol.ChallengeMessage
+
+import jakarta.ws.rs.client.Client
+import jakarta.ws.rs.client.ClientBuilder
+import jakarta.ws.rs.client.Invocation
+import jakarta.ws.rs.client.WebTarget
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.NewCookie
+import jakarta.ws.rs.core.Response
+
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -78,9 +89,16 @@ class VerifyFragment : Fragment() {
             verifyLogView.text = it
         })*/
 
-        val serverUrl = "http://localhost:8080/liveness"
-        //val client = ClientBuilder.newClient();
-        //val livenessTarget = client.target(URL);
-        textView.text = serverUrl
+        val serverUrl = "https://192.168.64.22:8080/liveness"
+        val client = ClientBuilder.newClient();
+        val livenessTarget = client.target(serverUrl);
+        val challengeTarget = livenessTarget.path("challenge")
+        val challengeBuilder = challengeTarget.request(MediaType.APPLICATION_JSON)
+        val res = challengeBuilder.get(Response::class.java)
+        val cookies = res.cookies
+        //val challenge: ChallengeMessage = res.readEntity(ChallengeMessage::class.java)
+
+
+        textView.text = res.toString()
     }
 }
