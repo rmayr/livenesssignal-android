@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
-            // disable login button unless both server / appPassword is valid
+            // disable login buttonVerify unless both server / appPassword is valid
             login.isEnabled = loginState.isDataValid
 
             if (loginState.usernameError != null) {

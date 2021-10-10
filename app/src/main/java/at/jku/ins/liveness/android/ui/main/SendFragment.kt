@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,7 +16,7 @@ import at.jku.ins.liveness.android.databinding.FragmentSendBinding
  */
 class SendFragment : Fragment() {
 
-    private lateinit var pageViewModel: PageViewModel
+    //private lateinit var pageViewModel: PageViewModel
     private var _binding: FragmentSendBinding? = null
 
     // This property is only valid between onCreateView and
@@ -24,9 +25,9 @@ class SendFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pageViewModel = ViewModelProvider(this).get(PageViewModel::class.java).apply {
+        /*pageViewModel = ViewModelProvider(this).get(PageViewModel::class.java).apply {
             setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-        }
+        }*/
     }
 
     override fun onCreateView(
@@ -37,10 +38,11 @@ class SendFragment : Fragment() {
         _binding = FragmentSendBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        val textView: TextView = binding.sectionLabel
-        pageViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+        val sendBtn = binding.buttonSend as Button
+        sendBtn.setOnClickListener {
+            startSend(root)
+        }
+
         return root
     }
 
@@ -68,5 +70,14 @@ class SendFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun startSend(view: View) {
+        val textView: TextView = binding.sendLogView
+        /*pageViewModel.text.observe(viewLifecycleOwner, Observer {
+            verifyLogView.text = it
+        })*/
+
+        textView.text = "Something interesting happening during sending"
     }
 }

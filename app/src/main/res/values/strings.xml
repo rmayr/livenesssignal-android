@@ -34,8 +34,10 @@
 
     <!-- Verify fragment -->
     <string name="button_check_signals">Check for signals</string>
+    <string name="text_check_log_view">Push button to check for signals</string>
 
     <!-- Send fragment -->
     <string name="text_send_signal">Enter new signal text</string>
     <string name="button_send_signal">Send new signal</string>
+    <string name="text_send_log_view">Enter new signal above and push button to try to send</string>
 </resources>

@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
 
         /*val fab: FloatingActionButton = binding.fab
-
         fab.setOnClickListener { view -> startSignalAction(view) }*/
     }
 
@@ -36,12 +35,14 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, SettingsActivity::class.java))
     }
 
-    fun startSignalAction(view: View) {
+    /*fun startSignalAction(view: View) {
+        startActivity(Intent(this, SettingsActivity::class.java))
+
         //val tabLayout = findViewById<View>(R.id.tabs) as TabLayout
         //val selectedTabPosition = tabLayout.selectedTabPosition
         /*Snackbar.make(view, "Acting on tab " + selectedTabPosition, Snackbar.LENGTH_LONG)
             .setAction("Action", null).show()*/
 
         //Log.v(TAG, tabLayout.toString())
-    }
+    }*/
 }
