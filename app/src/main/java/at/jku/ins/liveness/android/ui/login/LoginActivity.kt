@@ -15,11 +15,22 @@ import android.widget.EditText
 import android.widget.Toast
 import at.jku.ins.liveness.android.ui.main.MainActivity
 import at.jku.ins.liveness.android.databinding.ActivityLoginBinding
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import java.security.Security
+
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
+
+    companion object {
+        init {
+            Security.removeProvider("BC")
+            // Confirm that positioning this provider at the end works for your needs!
+            Security.addProvider(BouncyCastleProvider())
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
