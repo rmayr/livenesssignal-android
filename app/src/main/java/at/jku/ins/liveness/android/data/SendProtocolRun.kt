@@ -8,6 +8,7 @@ import at.jku.ins.liveness.protocol.ChallengeMessage
 import at.jku.ins.liveness.protocol.RequestMessage
 import at.jku.ins.liveness.protocol.RequestMessage.TYPE
 import at.jku.ins.liveness.protocol.ResponseMessage
+import at.jku.ins.liveness.signals.Prover
 import at.jku.ins.liveness.signals.Signal
 import at.jku.ins.liveness.signals.SignalUtils
 import jakarta.ws.rs.client.*
@@ -23,9 +24,23 @@ import java.security.SecureRandom
 class SendProtocolRun(val newSignal: String) : ProtocolRun {
     private val serverUrl = "http://192.168.64.22:8080/liveness"
 
+    companion object {
+        var initialSignalData: ByteArray? = null
+    }
+
     override suspend fun makeRequest(viewModel: PageViewModel): Result<String> {
         val client = ClientBuilder.newClient();
         val livenessTarget = client.target(serverUrl);
+
+        val SIGNAL_COUNT = 100000
+        val SHARED_PWD = "PwdShared"
+        val prover = Prover(
+            ConfigConstants.ALGORITHM,
+            "PwdProofer",
+            SHARED_PWD,
+            SIGNAL_COUNT
+        )
+        initialSignalData = prover.initialSignalData
 
         try {
             // Step 1: Retrieve server challenge
@@ -41,26 +56,22 @@ class SendProtocolRun(val newSignal: String) : ProtocolRun {
 
             // Step 2: Compute PoW and submit solution to retrieve signal
             val solution = pow.proofWork(challenge.challenge, challenge.leadingZeros, 5)
-
-            // TODO: don't need random later
-            val rnd = SecureRandom()
-            // TODO: do proper signal key derivation from the input here!
-            val key = ByteArray(ConfigConstants.SIGNAL_LENGTH)
-            rnd.nextBytes(key)
-            // Make sure we do not have correct data at the moment - TODO: try with cached data first
-            val data = ByteArray(ConfigConstants.SIGNAL_LENGTH)
-            rnd.nextBytes(data)
-
-            val request = RequestMessage(TYPE.STORE, Signal(key, data), solution)
+            val signal = prover.nextSignal
+            val request = RequestMessage(TYPE.STORE, signal, solution)
             val signalTarget = livenessTarget.path("signal")
             val signalBuilder = signalTarget.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
             // Have to manually add the session cookie
             val response = signalBuilder.cookie(cookies["JSESSIONID"]).post(Entity.json(request))
             val result = response.readEntity<ResponseMessage>(ResponseMessage::class.java)
+            if (response.status != 200)
+                return Result.Error(Exception("Could not store signal: server status was " + res.status))
             // Get the data we submitted for storage
-            val sentSignal = SignalUtils.byteArrayToHexString(request.signal.signalData)
+            val receivedString = SignalUtils.byteArrayToHexString(request.signal.signalData)
+            println("Using key: " + signal.retrieveKeyString())
+            println("Submitted: " + SignalUtils.byteArrayToHexString(signal.signalData))
+            println("Received: + " + receivedString)
 
-            return Result.Success("yeah, the signal is: " + sentSignal)
+            return Result.Success("yeah, the signal is: " + receivedString)
         }
         catch (e: Exception) {
             return Result.Error(e)
