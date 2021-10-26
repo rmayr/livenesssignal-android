@@ -8,18 +8,6 @@
     android:orientation="vertical"
     tools:context="at.jku.ins.liveness.android.ui.main.VerifyFragment">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/newSignal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/text_send_signal" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <Button
         android:id="@+id/button_send"
         android:layout_width="185dp"

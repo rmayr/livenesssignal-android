@@ -21,7 +21,7 @@ import jakarta.ws.rs.core.NewCookie
 import jakarta.ws.rs.core.Response
 import java.security.SecureRandom
 
-class SendProtocolRun(val newSignal: String) : ProtocolRun {
+class SendProtocolRun() : ProtocolRun {
     private val serverUrl = "http://192.168.64.22:8080/liveness"
 
     companion object {

@@ -57,6 +57,6 @@ class SendFragment : Fragment() {
 
     fun startSend(view: View) {
         pageViewModel.setText("Starting request ...")
-        pageViewModel.runNetworkRequest(SendProtocolRun(binding.newSignal.text.toString()))
+        pageViewModel.runNetworkRequest(SendProtocolRun())
     }
 }
