@@ -45,9 +45,9 @@ class VerifyProtocolRun : ProtocolRun {
             val retrievedSignal: String = resultData.retrieveDataString()
 
             if (verifier.verify(resultData.data))
-                return Result.Success("yeah, correctly verified signal is: " + retrievedSignal)
+                return Result.Success("Correctly verified signal is: $retrievedSignal")
             else
-                return Result.Error(Exception("booh, couldn't verify signal: " + retrievedSignal))
+                return Result.Error(Exception("Couldn't verify signal: $retrievedSignal"))
         }
         catch (e: Exception) {
             return Result.Error(e)
