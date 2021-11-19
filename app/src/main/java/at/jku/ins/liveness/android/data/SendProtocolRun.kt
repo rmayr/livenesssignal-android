@@ -2,8 +2,6 @@ package at.jku.ins.liveness.android.data
 
 import at.jku.ins.liveness.ConfigConstants
 import at.jku.ins.liveness.android.ui.main.PageViewModel
-import at.jku.ins.liveness.proofOfWork.ProofOfWorkFactory
-import at.jku.ins.liveness.protocol.ChallengeMessage
 import at.jku.ins.liveness.protocol.RequestMessage
 import at.jku.ins.liveness.protocol.RequestMessage.TYPE
 import at.jku.ins.liveness.protocol.ResponseMessage
@@ -12,7 +10,6 @@ import at.jku.ins.liveness.signals.SignalUtils
 
 import jakarta.ws.rs.client.*
 import jakarta.ws.rs.core.MediaType
-import jakarta.ws.rs.core.Response
 
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
@@ -58,35 +55,17 @@ class SendProtocolRun() : ProtocolRun {
         }
 
         try {
-            // Step 1: Retrieve server challenge
-            val challengeTarget = livenessTarget.path(Constants.serverUrlChallenge)
-            val challengeBuilder = challengeTarget.request(MediaType.APPLICATION_JSON)
-            var res = challengeBuilder.get(Response::class.java)
-            val cookies = res.cookies
-            var challenge: ChallengeMessage = res.readEntity(ChallengeMessage::class.java)
-            if (res.status != 200)
-                return Result.Error(Exception("Could not get challenge: server status was " + res.status))
-            val pow = ProofOfWorkFactory.getProofOfWork(ConfigConstants.ALGORITHM)
-            viewModel.addLine("Received PoW challenge: " + challenge.challenge)
+            val (solution, cookies) = computeProofOfWork(livenessTarget)
 
-            // Step 2: Compute PoW and submit solution to retrieve signal
-            val solution = pow.proofWork(challenge.challenge, challenge.leadingZeros, 5)
             val signal = prover.nextSignal
-            val request = RequestMessage(TYPE.STORE, signal, solution)
-            val signalTarget = livenessTarget.path(Constants.serverUrlSignal)
-            val signalBuilder = signalTarget.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-            // Have to manually add the session cookie
-            val response = signalBuilder.cookie(cookies["JSESSIONID"]).post(Entity.json(request))
-            val result = response.readEntity<ResponseMessage>(ResponseMessage::class.java)
-            if (response.status != 200)
-                return Result.Error(Exception("Could not store signal: server status was " + res.status))
-            // Get the data we submitted for storage
-            val receivedString = SignalUtils.byteArrayToHexString(request.signal.signalData)
-            println("Using key: " + signal.retrieveKeyString())
-            println("Submitted: " + SignalUtils.byteArrayToHexString(signal.signalData))
-            println("Received: + " + receivedString)
+            val resultData = submitMessage(livenessTarget, TYPE.STORE, signal, solution, cookies)
+            val retrievedSignal: String = resultData.retrieveDataString()
 
-            return Result.Success("yeah, the signal is: " + receivedString)
+            // Get the data we submitted for storage
+            /*println("Using key: " + signal.retrieveKeyString())
+            println("Submitted: " + SignalUtils.byteArrayToHexString(signal.signalData))*/
+
+            return Result.Success("The signal is: $retrievedSignal")
         }
         catch (e: Exception) {
             return Result.Error(e)

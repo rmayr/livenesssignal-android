@@ -34,10 +34,10 @@ class PageViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = protocol.makeRequest(viewModel, data)) {
                 is Result.Success<String> -> {
-                    addLine("Yeah")
+                    addLine("Success: " + result.data)
                     success.postValue(true)
                 }
-                else -> addLine("Error" + result)
+                else -> addLine("Error: $result")
             }
         }
     }
