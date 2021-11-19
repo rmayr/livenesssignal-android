@@ -39,6 +39,7 @@
     <!-- Send fragment -->
     <!--<string name="text_send_signal">Enter new signal text</string>-->
     <string name="button_send_signal">Send new signal</string>
+    <string name="button_sync_data">Sync data to verify</string>
     <string name="image_initial_signal_data_export">QRcode for exporting initial signal data</string>
     <string name="text_send_log_view">Push button to send new signal</string>
 </resources>

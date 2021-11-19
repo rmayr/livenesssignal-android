@@ -43,6 +43,13 @@ class SendFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
             imageView.setImageBitmap(it)
         })
 
+        val syncBtn = binding.buttonSyncData as Button
+        super.pageViewModel.success.observe(viewLifecycleOwner, Observer {
+            if (it as Boolean == true) {
+                syncBtn.isEnabled = true
+            }
+        })
+
         val sendBtn = binding.buttonSend as Button
         sendBtn.setOnClickListener {
             startAction()

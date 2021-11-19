@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.data.ProtocolRun
 import at.jku.ins.liveness.android.data.ProtocolRunData
+import at.jku.ins.liveness.android.data.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -13,6 +14,7 @@ class PageViewModel : ViewModel() {
     private val _textBuilder = StringBuilder()
     val text = MutableLiveData<String>()
     val bitmap = MutableLiveData<Bitmap>()
+    val success = MutableLiveData<Boolean>()
 
     fun setText(newText: String) {
         _textBuilder.clear()
@@ -30,9 +32,11 @@ class PageViewModel : ViewModel() {
 
     fun runNetworkRequest(protocol: ProtocolRun, data: ProtocolRunData, viewModel: PageViewModel = this) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = protocol.makeRequest(viewModel, data)
-            when (result) {
-                //is Result.Success<String> -> addLine("Yeah")
+            when (val result = protocol.makeRequest(viewModel, data)) {
+                is Result.Success<String> -> {
+                    addLine("Yeah")
+                    success.postValue(true)
+                }
                 else -> addLine("Error" + result)
             }
         }
