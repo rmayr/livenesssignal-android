@@ -14,10 +14,17 @@
         android:layout_height="wrap_content"
         android:text="@string/button_send_signal" />
 
+    <ImageView
+        android:id="@+id/initialSignalCodeExport"
+        android:layout_width="match_parent"
+        android:layout_height="152dp"
+        android:contentDescription="@string/image_initial_signal_data_export"
+        android:src="@android:drawable/screen_background_dark_transparent" />
+
     <TextView
         android:id="@+id/sendLogView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/text_send_log_view" />
 
 </LinearLayout>
