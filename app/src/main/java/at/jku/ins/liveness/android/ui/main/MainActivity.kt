@@ -1,15 +1,16 @@
 package at.jku.ins.liveness.android.ui.main
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import androidx.preference.PreferenceManager
-import at.jku.ins.liveness.android.R
+//import at.jku.ins.liveness.android.R
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.databinding.ActivityMainBinding
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
+    private lateinit var sharedPreferences: SharedPreferences
 
     private var appPassword: String? = null
     private var signalPassword: String? = null
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
         sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = binding.viewPager
@@ -61,16 +63,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateProtocolRunData() {
+        // try to update from shared preferences - we might have returned from that activity
+        serverUrl = sharedPreferences.getString(Constants.serverPreference, "")
+
         if (appPassword != null && signalPassword != null && serverUrl != null &&
             appPassword!!.isNotEmpty() && signalPassword!!.isNotEmpty() && serverUrl!!.isNotEmpty()) {
-            val _data = ProtocolRunData(signalPassword!!, appPassword!!, serverUrl!!)
+            val data = ProtocolRunData(signalPassword!!, appPassword!!, serverUrl!!)
 
-            sectionsPagerAdapter.getItem(0).setData(_data)
-            sectionsPagerAdapter.getItem(1).setData(_data)
+            sectionsPagerAdapter.getItem(0).setData(data)
+            sectionsPagerAdapter.getItem(1).setData(data)
         }
         else {
             Log.e(Constants.LOG_TAG, "Can't continue: invalid password(s) or server URL set")
+            Toast.makeText(applicationContext, "Can't continue: invalid password(s) or server URL set", Toast.LENGTH_LONG).show()
         }
+    }
+
+    fun updateVerifierInitialSignalData(initialSignalData: ByteArray) {
+        (sectionsPagerAdapter.getItem(0) as VerifyFragment).updateInitialSignalData(initialSignalData)
     }
 
     /*private fun startSignalAction(view: View) {

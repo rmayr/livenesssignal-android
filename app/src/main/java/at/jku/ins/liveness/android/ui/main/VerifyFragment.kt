@@ -4,14 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import at.jku.ins.liveness.android.data.ProtocolRun
-import at.jku.ins.liveness.android.data.SendProtocolRun
-import at.jku.ins.liveness.android.data.VerifyProtocolRun
 import at.jku.ins.liveness.android.databinding.FragmentVerifyBinding
 
 /**
@@ -22,10 +17,6 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +30,7 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
             textView.text = it
         })
 
-        val verifyBtn = binding.buttonVerify as Button
+        val verifyBtn = binding.buttonVerify
         verifyBtn.setOnClickListener {
             startAction()
         }
@@ -50,5 +41,9 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun updateInitialSignalData(initialSignalData: ByteArray) {
+        pageViewModel.setInitialSignalData(initialSignalData)
     }
 }

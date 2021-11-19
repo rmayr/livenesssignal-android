@@ -1,9 +1,6 @@
 package at.jku.ins.liveness.android.ui.main
 
-import android.content.SharedPreferences
-import android.graphics.Bitmap
 import androidx.lifecycle.*
-import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.data.ProtocolRun
 import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.data.Result
@@ -13,7 +10,7 @@ import kotlinx.coroutines.launch
 class PageViewModel : ViewModel() {
     private val _textBuilder = StringBuilder()
     val text = MutableLiveData<String>()
-    val bitmap = MutableLiveData<Bitmap>()
+    val initialSignalData = MutableLiveData<ByteArray>()
     val success = MutableLiveData<Boolean>()
 
     fun setText(newText: String) {
@@ -26,8 +23,8 @@ class PageViewModel : ViewModel() {
         text.postValue(_textBuilder.toString())
     }
 
-    fun setBitmap(newBitmap: Bitmap) {
-        bitmap.postValue(newBitmap)
+    fun setInitialSignalData(newInitialSignalData: ByteArray) {
+        initialSignalData.postValue(newInitialSignalData)
     }
 
     fun runNetworkRequest(protocol: ProtocolRun, data: ProtocolRunData, viewModel: PageViewModel = this) {
