@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.data.SendProtocolRun
 import at.jku.ins.liveness.android.data.VerifyProtocolRun
 import at.jku.ins.liveness.android.databinding.FragmentVerifyBinding
@@ -69,16 +70,16 @@ class VerifyFragment : Fragment() {
             /*if (singleton == null)
                 singleton = VerifyFragment()*/
 
-            return singleton as VerifyFragment
+            return singleton
         }
 
         fun getModel(): PageViewModel {
             return singleton.pageViewModel
         }
 
-        fun startAction() {
+        fun startAction(data: ProtocolRunData) {
             getModel().setText("Starting request ...")
-            getModel().runNetworkRequest(VerifyProtocolRun())
+            getModel().runNetworkRequest(VerifyProtocolRun(), data)
         }
     }
 }

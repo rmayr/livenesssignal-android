@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import at.jku.ins.liveness.android.R
+import at.jku.ins.liveness.android.data.SendProtocolRun
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_text_1,
@@ -22,7 +23,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> VerifyFragment.getInstance()
-            else -> SendFragment.getInstance()
+            else -> SendFragment.getInstance(SendProtocolRun())
         }
     }
 

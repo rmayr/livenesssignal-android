@@ -1,21 +1,23 @@
 package at.jku.ins.liveness.android.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import at.jku.ins.liveness.android.data.SendProtocolRun
+import at.jku.ins.liveness.android.data.Constants
+import at.jku.ins.liveness.android.data.ProtocolRun
+import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.databinding.FragmentSendBinding
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class SendFragment : Fragment() {
+class SendFragment(private val protocol: ProtocolRun) : Fragment() {
 
     private lateinit var pageViewModel: PageViewModel
     private var _binding: FragmentSendBinding? = null
@@ -47,6 +49,8 @@ class SendFragment : Fragment() {
             startSend(root)
         }*/
 
+        Log.d(Constants.LOG_TAG, "SendFragment initialized")
+
         return root
     }
 
@@ -60,24 +64,21 @@ class SendFragment : Fragment() {
         pageViewModel.runNetworkRequest(SendProtocolRun())
     }*/
 
+    fun startAction(data: ProtocolRunData) {
+        pageViewModel.setText("Starting request ...")
+        pageViewModel.runNetworkRequest(protocol, data)
+    }
+
+
     companion object {
-        private var singleton: SendFragment = SendFragment()
+        private var singleton: SendFragment? = null
 
         @JvmStatic
-        fun getInstance(): SendFragment {
-            /*if (singleton == null)
-                singleton = SendFragment()*/
+        fun getInstance(protocol: ProtocolRun): SendFragment {
+            if (singleton == null)
+                singleton = SendFragment(protocol)
 
-            return singleton
-        }
-
-        fun getModel(): PageViewModel {
-            return singleton.pageViewModel
-        }
-
-        fun startAction() {
-            getModel().setText("Starting request ...")
-            getModel().runNetworkRequest(SendProtocolRun())
+            return singleton as SendFragment
         }
     }
 }

@@ -9,11 +9,12 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
 import androidx.preference.PreferenceManager
+import at.jku.ins.liveness.android.data.Constants
+import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.ui.main.MainActivity
 import at.jku.ins.liveness.android.databinding.ActivityLoginBinding
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -22,7 +23,7 @@ import java.security.Security
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var loginViewModel: LoginViewModel
+    //private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
 
     companion object {
@@ -43,16 +44,17 @@ class LoginActivity : AppCompatActivity() {
         val appPassword = binding.appPassword
         val signalPassword = binding.signalPassword
         val start = binding.login
+        start.isEnabled = false
         //val loading = binding.loading
 
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+        /*loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
+            .get(LoginViewModel::class.java)*/
 
         // initialize with defaults from preferences
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.getString("server", "").also { server.setText(it.toString()) }
 
-        loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
+        /*loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
             // disable login buttonVerify unless both server / appPassword is valid
@@ -64,9 +66,9 @@ class LoginActivity : AppCompatActivity() {
             if (loginState.passwordError != null) {
                 password.error = getString(loginState.passwordError)
             }*/
-        })
+        })*/
 
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
+        /*loginViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
 
             //loading.visibility = View.GONE
@@ -80,24 +82,24 @@ class LoginActivity : AppCompatActivity() {
 
             //Complete and destroy login activity once successful
             finish()
-        })
+        })*/
 
         server.afterTextChanged {
-            loginViewModel.loginDataChanged(
+            /*loginViewModel.loginDataChanged(
                 server.text.toString(),
                 appPassword.text.toString()
-            )
+            )*/
         }
 
         signalPassword.apply {
             afterTextChanged {
-                loginViewModel.loginDataChanged(
+                /*loginViewModel.loginDataChanged(
                     server.text.toString(),
                     appPassword.text.toString()
-                )
+                )*/
             }
 
-            setOnEditorActionListener { _, actionId, _ ->
+            /*setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
                         loginViewModel.login(
@@ -106,25 +108,30 @@ class LoginActivity : AppCompatActivity() {
                         )
                 }
                 false
-            }
+            }*/
 
             start.isEnabled = true
             start.setOnClickListener {
                 //loading.visibility = View.VISIBLE
-                loginViewModel.login(server.text.toString(), appPassword.text.toString())
+                //loginViewModel.login(server.text.toString(), appPassword.text.toString())
+
+                startMain()
             }
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val displayName = model.displayName
+    private fun startMain(/*model: ProtocolRunData*/) {
+        //val displayName = model.displayName
 
-        startActivity(Intent(this, MainActivity::class.java))
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(Constants.intentParamAppPassword, binding.appPassword.text.toString())
+        intent.putExtra(Constants.intentParamSignalPassword, binding.signalPassword.text.toString())
+        startActivity(intent)
     }
 
-    private fun showLoginFailed(@StringRes errorString: Int) {
+    /*private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
-    }
+    }*/
 }
 
 /**

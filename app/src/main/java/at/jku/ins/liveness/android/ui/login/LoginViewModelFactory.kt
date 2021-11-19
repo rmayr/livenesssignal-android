@@ -2,8 +2,6 @@ package at.jku.ins.liveness.android.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import at.jku.ins.liveness.android.data.LoginDataSource
-import at.jku.ins.liveness.android.data.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
@@ -15,9 +13,9 @@ class LoginViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(
-                loginRepository = LoginRepository(
+                /*loginRepository = LoginRepository(
                     dataSource = LoginDataSource()
-                )
+                )*/
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
