@@ -7,11 +7,15 @@ import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
+import at.jku.ins.liveness.android.R
 import at.jku.ins.liveness.android.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
 
     private val TAG = "LivenessSignal"
 
@@ -21,28 +25,27 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
+        sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = binding.viewPager
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
 
-        /*val fab: FloatingActionButton = binding.fab
-        fab.setOnClickListener { view -> startSignalAction(view) }*/
+        val fab: FloatingActionButton = binding.fab
+        fab.setOnClickListener { view -> startSignalAction(view) }
     }
 
     fun startSettings(view: View) {
         startActivity(Intent(this, SettingsActivity::class.java))
     }
 
-    /*fun startSignalAction(view: View) {
-        startActivity(Intent(this, SettingsActivity::class.java))
+    private fun startSignalAction(view: View) {
+        val tabLayout = findViewById<View>(R.id.tabs) as TabLayout
+        val selectedTabPosition = tabLayout.selectedTabPosition
+        Snackbar.make(view, "Acting on tab " + selectedTabPosition, Snackbar.LENGTH_LONG)
+            .setAction("Action", null).show()
 
-        //val tabLayout = findViewById<View>(R.id.tabs) as TabLayout
-        //val selectedTabPosition = tabLayout.selectedTabPosition
-        /*Snackbar.make(view, "Acting on tab " + selectedTabPosition, Snackbar.LENGTH_LONG)
-            .setAction("Action", null).show()*/
-
-        //Log.v(TAG, tabLayout.toString())
-    }*/
+        // TODO: call action
+        sectionsPagerAdapter.getItem(selectedTabPosition)
+    }
 }

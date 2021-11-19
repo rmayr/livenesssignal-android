@@ -8,11 +8,11 @@
     android:orientation="vertical"
     tools:context="at.jku.ins.liveness.android.ui.main.VerifyFragment">
 
-    <Button
+    <!--<Button
         android:id="@+id/button_send"
         android:layout_width="185dp"
         android:layout_height="wrap_content"
-        android:text="@string/button_send_signal" />
+        android:text="@string/button_send_signal" />-->
 
     <TextView
         android:id="@+id/sendLogView"

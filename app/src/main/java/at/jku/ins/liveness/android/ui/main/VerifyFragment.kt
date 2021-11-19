@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import at.jku.ins.liveness.android.data.SendProtocolRun
 import at.jku.ins.liveness.android.data.VerifyProtocolRun
 import at.jku.ins.liveness.android.databinding.FragmentVerifyBinding
 
@@ -42,10 +43,10 @@ class VerifyFragment : Fragment() {
             textView.text = it
         })
 
-        val verifyBtn = binding.buttonVerify as Button
+        /*val verifyBtn = binding.buttonVerify as Button
         verifyBtn.setOnClickListener {
             startVerify(root)
-        }
+        }*/
 
         return root
     }
@@ -55,8 +56,29 @@ class VerifyFragment : Fragment() {
         _binding = null
     }
 
-    fun startVerify(view: View) {
+    /*fun startVerify(view: View) {
         pageViewModel.setText("Starting request ...")
         pageViewModel.runNetworkRequest(VerifyProtocolRun())
+    }*/
+
+    companion object {
+        private var singleton: VerifyFragment = VerifyFragment()
+
+        @JvmStatic
+        fun getInstance(): VerifyFragment {
+            /*if (singleton == null)
+                singleton = VerifyFragment()*/
+
+            return singleton as VerifyFragment
+        }
+
+        fun getModel(): PageViewModel {
+            return singleton.pageViewModel
+        }
+
+        fun startAction() {
+            getModel().setText("Starting request ...")
+            getModel().runNetworkRequest(VerifyProtocolRun())
+        }
     }
 }

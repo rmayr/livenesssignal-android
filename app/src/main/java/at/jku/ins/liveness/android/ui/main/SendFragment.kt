@@ -42,10 +42,10 @@ class SendFragment : Fragment() {
             textView.text = it
         })
 
-        val sendBtn = binding.buttonSend as Button
+        /*val sendBtn = binding.buttonSend as Button
         sendBtn.setOnClickListener {
             startSend(root)
-        }
+        }*/
 
         return root
     }
@@ -55,8 +55,29 @@ class SendFragment : Fragment() {
         _binding = null
     }
 
-    fun startSend(view: View) {
+    /*fun startSend(view: View) {
         pageViewModel.setText("Starting request ...")
         pageViewModel.runNetworkRequest(SendProtocolRun())
+    }*/
+
+    companion object {
+        private var singleton: SendFragment = SendFragment()
+
+        @JvmStatic
+        fun getInstance(): SendFragment {
+            /*if (singleton == null)
+                singleton = SendFragment()*/
+
+            return singleton
+        }
+
+        fun getModel(): PageViewModel {
+            return singleton.pageViewModel
+        }
+
+        fun startAction() {
+            getModel().setText("Starting request ...")
+            getModel().runNetworkRequest(SendProtocolRun())
+        }
     }
 }

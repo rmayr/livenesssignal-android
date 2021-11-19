@@ -18,10 +18,11 @@ private val TAB_TITLES = arrayOf(
 class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm) {
 
+    // TODO: might want to have a single common fragment implementation again, but only distinguish action
     override fun getItem(position: Int): Fragment {
-        when (position) {
-            0 -> return VerifyFragment()
-            else -> return SendFragment()
+        return when (position) {
+            0 -> VerifyFragment.getInstance()
+            else -> SendFragment.getInstance()
         }
     }
 
