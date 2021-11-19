@@ -20,7 +20,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm) {
 
     // keep the view fragments as singletons
-    private val fragments = arrayOf<ViewFragment>(ViewFragment(VerifyProtocolRun()), ViewFragment(SendProtocolRun()))
+    private val fragments = arrayOf<ViewFragment>(VerifyFragment(VerifyProtocolRun()), SendFragment(SendProtocolRun()))
 
     override fun getItem(position: Int): ViewFragment {
         return when (position) {

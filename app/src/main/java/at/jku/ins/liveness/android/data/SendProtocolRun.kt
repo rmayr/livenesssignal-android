@@ -20,8 +20,8 @@ class SendProtocolRun() : ProtocolRun {
     }
 
     override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String> {
-        val client = ClientBuilder.newClient();
-        val livenessTarget = client.target(data.serverUrl);
+        val client = ClientBuilder.newClient()
+        val livenessTarget = client.target(data.serverUrl)
 
         val prover = Prover(
             ConfigConstants.ALGORITHM,

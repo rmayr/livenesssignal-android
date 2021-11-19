@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+
         sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = binding.viewPager
         viewPager.adapter = sectionsPagerAdapter
@@ -37,19 +39,20 @@ class MainActivity : AppCompatActivity() {
 
         appPassword = intent.getStringExtra(Constants.intentParamAppPassword)
         signalPassword = intent.getStringExtra(Constants.intentParamSignalPassword)
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         serverUrl = sharedPreferences.getString(Constants.serverPreference, "")
 
         if (appPassword != null && signalPassword != null && serverUrl != null &&
             appPassword!!.isNotEmpty() && signalPassword!!.isNotEmpty() && serverUrl!!.isNotEmpty()) {
-            val fab: FloatingActionButton = binding.fab
-            fab.setOnClickListener { view -> startSignalAction(view) }
-
             Log.d(Constants.LOG_TAG, "Started main activity with serverUrl=${serverUrl}, signalPassword=${signalPassword}, appPassword=${appPassword}")
+
+            /*val fab: FloatingActionButton = binding.fab
+            fab.setOnClickListener { view -> startSignalAction(view) }*/
+
+            updateProtocolRunData()
         }
         else {
             //VerifyFragment.getModel().setText("Can't continue: invalid password(s) set")
-            Log.e(Constants.LOG_TAG, "Can't continue: invalid password(s) set")
+            Log.e(Constants.LOG_TAG, "Can't continue: invalid password(s) or server URL set")
         }
     }
 
@@ -57,15 +60,36 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, SettingsActivity::class.java))
     }
 
-    private fun startSignalAction(view: View) {
+    private fun updateProtocolRunData() {
+        if (appPassword != null && signalPassword != null && serverUrl != null &&
+            appPassword!!.isNotEmpty() && signalPassword!!.isNotEmpty() && serverUrl!!.isNotEmpty()) {
+            val _data = ProtocolRunData(signalPassword!!, appPassword!!, serverUrl!!)
+
+            sectionsPagerAdapter.getItem(0).setData(_data)
+            sectionsPagerAdapter.getItem(1).setData(_data)
+        }
+        else {
+            Log.e(Constants.LOG_TAG, "Can't continue: invalid password(s) or server URL set")
+        }
+    }
+
+    /*private fun startSignalAction(view: View) {
         val tabLayout = findViewById<View>(R.id.tabs) as TabLayout
         val selectedTabPosition = tabLayout.selectedTabPosition
         /*Snackbar.make(view, "Acting on tab " + selectedTabPosition, Snackbar.LENGTH_LONG)
             .setAction("Action", null).show()*/
 
-        // TODO: call action
-        (sectionsPagerAdapter.getItem(selectedTabPosition) as ViewFragment).startAction(
+        // TODO: make sure we update the server URL, recreating the ProtocolRunData object in both views when anything updates, e.g. when returning from settings
+        // update server URL - it may have been changed in settings
+        val serverUrl = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.serverPreference, "")
+        if (serverUrl == null || serverUrl!!.isEmpty()) {
+            Log.e(Constants.LOG_TAG, "Can't continue: invalid server URL set in settings")
+            return
+        }
+        _data.serverUrl = serverUrl
+
+        sectionsPagerAdapter.getItem(selectedTabPosition).startAction(
             ProtocolRunData(signalPassword!!, appPassword!!, serverUrl!!)
         )
-    }
+    }*/
 }

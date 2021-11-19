@@ -9,21 +9,17 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRun
 import at.jku.ins.liveness.android.data.ProtocolRunData
-import at.jku.ins.liveness.android.databinding.FragmentViewBinding
 
 /**
- * A placeholder fragment containing a simple view.
+ * Common send and verify fragment base class
  */
-class ViewFragment(private val protocol: ProtocolRun) : Fragment() {
-
-    private lateinit var pageViewModel: PageViewModel
-    private var _binding: FragmentViewBinding? = null
-
-    // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+open class ViewFragment(private val protocol: ProtocolRun) : Fragment() {
+    internal lateinit var pageViewModel: PageViewModel
+    internal var data: ProtocolRunData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,43 +28,20 @@ class ViewFragment(private val protocol: ProtocolRun) : Fragment() {
         }*/
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        _binding = FragmentViewBinding.inflate(inflater, container, false)
-        val root = binding.root
-        val textView: TextView = binding.logView
-        pageViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-
-        /*val sendBtn = binding.buttonSend as Button
-        sendBtn.setOnClickListener {
-            startSend(root)
-        }*/
-
-        Log.d(Constants.LOG_TAG, "ViewFragment initialized")
-
-        return root
+    fun setData(_data: ProtocolRunData) {
+        data = _data
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    fun startAction() {
+        val _data = data
+        if (_data == null) {
+            Log.e(Constants.LOG_TAG, "Can't continue: protocol run data not initialized")
+            return
+        }
 
-    /*fun startSend(view: View) {
         pageViewModel.setText("Starting request ...")
-        pageViewModel.runNetworkRequest(SendProtocolRun())
-    }*/
-
-    fun startAction(data: ProtocolRunData) {
-        pageViewModel.setText("Starting request ...")
-        pageViewModel.runNetworkRequest(protocol, data)
+        pageViewModel.runNetworkRequest(protocol, _data)
     }
-
 
     /*companion object {
         private var singleton: ViewFragment? = null

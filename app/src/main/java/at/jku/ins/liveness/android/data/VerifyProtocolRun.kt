@@ -21,28 +21,24 @@ import jakarta.ws.rs.core.Response
 import java.security.SecureRandom
 
 class VerifyProtocolRun : ProtocolRun {
-    private val serverUrl = "http://192.168.64.22:8080/liveness"
-
     override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String> {
         val client = ClientBuilder.newClient();
-        val livenessTarget = client.target(serverUrl);
+        val livenessTarget = client.target(data.serverUrl)
 
         if (SendProtocolRun.initialSignalData == null)
-            return Result.Error(Exception("poof"))
+            return Result.Error(Exception("No initial signal data set, please import from prover"))
 
-        val SIGNAL_COUNT = 100000
-        val SHARED_PWD = "PwdShared"
         // TODO: need to implement QRcode transfer of initial signal data
         val verifier = Verifier(
             ConfigConstants.ALGORITHM,
-            "PwdVerifier",
-            SHARED_PWD,
+            data.appPassword,
+            data.signalPassword,
             SendProtocolRun.initialSignalData
         )
 
         try {
             // Step 1: Retrieve server challenge
-            val challengeTarget = livenessTarget.path("challenge")
+            val challengeTarget = livenessTarget.path(Constants.serverUrlChallenge)
             val challengeBuilder = challengeTarget.request(MediaType.APPLICATION_JSON)
             var res = challengeBuilder.get(Response::class.java)
             val cookies = res.cookies
@@ -57,7 +53,7 @@ class VerifyProtocolRun : ProtocolRun {
 
             val data = ByteArray(ConfigConstants.SIGNAL_LENGTH)
             val request = RequestMessage(TYPE.RETRIEVE, Signal(verifier.getNextKey(0), data), solution)
-            val signalTarget = livenessTarget.path("signal")
+            val signalTarget = livenessTarget.path(Constants.serverUrlSignal)
             // Need to create new builder to remove old cookie
             val signalBuilder = signalTarget.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
             // Have to manually add the session cookie
