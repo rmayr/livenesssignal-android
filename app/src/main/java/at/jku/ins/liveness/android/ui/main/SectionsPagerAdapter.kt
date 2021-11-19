@@ -1,11 +1,11 @@
 package at.jku.ins.liveness.android.ui.main
 
 import android.content.Context
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import at.jku.ins.liveness.android.R
 import at.jku.ins.liveness.android.data.SendProtocolRun
+import at.jku.ins.liveness.android.data.VerifyProtocolRun
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_text_1,
@@ -19,11 +19,13 @@ private val TAB_TITLES = arrayOf(
 class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm) {
 
-    // TODO: might want to have a single common fragment implementation again, but only distinguish action
-    override fun getItem(position: Int): Fragment {
+    // keep the view fragments as singletons
+    private val fragments = arrayOf<ViewFragment>(ViewFragment(VerifyProtocolRun()), ViewFragment(SendProtocolRun()))
+
+    override fun getItem(position: Int): ViewFragment {
         return when (position) {
-            0 -> VerifyFragment.getInstance()
-            else -> SendFragment.getInstance(SendProtocolRun())
+            0 -> fragments[0]
+            else -> fragments[1]
         }
     }
 

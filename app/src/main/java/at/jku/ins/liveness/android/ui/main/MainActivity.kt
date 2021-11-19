@@ -13,7 +13,6 @@ import at.jku.ins.liveness.android.R
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.databinding.ActivityMainBinding
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             .setAction("Action", null).show()*/
 
         // TODO: call action
-        (sectionsPagerAdapter.getItem(selectedTabPosition) as SendFragment).startAction(
+        (sectionsPagerAdapter.getItem(selectedTabPosition) as ViewFragment).startAction(
             ProtocolRunData(signalPassword!!, appPassword!!, serverUrl!!)
         )
     }

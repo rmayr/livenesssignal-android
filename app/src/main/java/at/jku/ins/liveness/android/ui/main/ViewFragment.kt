@@ -12,15 +12,15 @@ import androidx.lifecycle.ViewModelProvider
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRun
 import at.jku.ins.liveness.android.data.ProtocolRunData
-import at.jku.ins.liveness.android.databinding.FragmentSendBinding
+import at.jku.ins.liveness.android.databinding.FragmentViewBinding
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class SendFragment(private val protocol: ProtocolRun) : Fragment() {
+class ViewFragment(private val protocol: ProtocolRun) : Fragment() {
 
     private lateinit var pageViewModel: PageViewModel
-    private var _binding: FragmentSendBinding? = null
+    private var _binding: FragmentViewBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -37,9 +37,9 @@ class SendFragment(private val protocol: ProtocolRun) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentSendBinding.inflate(inflater, container, false)
+        _binding = FragmentViewBinding.inflate(inflater, container, false)
         val root = binding.root
-        val textView: TextView = binding.sendLogView
+        val textView: TextView = binding.logView
         pageViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
@@ -49,7 +49,7 @@ class SendFragment(private val protocol: ProtocolRun) : Fragment() {
             startSend(root)
         }*/
 
-        Log.d(Constants.LOG_TAG, "SendFragment initialized")
+        Log.d(Constants.LOG_TAG, "ViewFragment initialized")
 
         return root
     }
@@ -70,15 +70,15 @@ class SendFragment(private val protocol: ProtocolRun) : Fragment() {
     }
 
 
-    companion object {
-        private var singleton: SendFragment? = null
+    /*companion object {
+        private var singleton: ViewFragment? = null
 
         @JvmStatic
-        fun getInstance(protocol: ProtocolRun): SendFragment {
+        fun getInstance(protocol: ProtocolRun): ViewFragment {
             if (singleton == null)
-                singleton = SendFragment(protocol)
+                singleton = ViewFragment(protocol)
 
-            return singleton as SendFragment
+            return singleton as ViewFragment
         }
-    }
+    }*/
 }

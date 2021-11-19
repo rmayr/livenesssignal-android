@@ -9,16 +9,15 @@
     tools:context="at.jku.ins.liveness.android.ui.main.VerifyFragment">
 
     <!--<Button
-        android:id="@+id/buttonVerify"
-        android:layout_width="wrap_content"
+        android:id="@+id/button_send"
+        android:layout_width="185dp"
         android:layout_height="wrap_content"
-        android:onClick="startVerify"
-        android:text="@string/button_check_signals" />-->
+        android:text="@string/button_send_signal" />-->
 
     <TextView
-        android:id="@+id/verifyLogView"
+        android:id="@+id/logView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/text_check_log_view" />
+        android:text="@string/text_send_log_view" />
 
 </LinearLayout>
