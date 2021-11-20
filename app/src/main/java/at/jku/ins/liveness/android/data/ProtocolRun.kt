@@ -12,9 +12,22 @@ import jakarta.ws.rs.client.WebTarget
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.NewCookie
 import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.client.ClientBuilder
+import org.glassfish.jersey.client.ClientProperties
+import org.glassfish.jersey.client.ClientConfig
 
 sealed interface ProtocolRun {
     suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String>
+
+    fun createClient(serverUrl: String): WebTarget {
+        val config = ClientConfig()
+        if (serverUrl.contains(".onion")) {
+            // TODO: check if we have Orbot installed so that we can use it
+            config.property(ClientProperties.PROXY_URI, "localhost:9050")
+        }
+        val client = ClientBuilder.newClient(config)
+        return client.target(serverUrl)
+    }
 
     /** Before being able to store or retrieve signals, need to solve a fresh challenge by the server */
     fun computeProofOfWork(livenessTarget: WebTarget): Pair<Long, Map<String, NewCookie>> {

@@ -52,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
 
         // initialize with defaults from preferences
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        sharedPreferences.getString("server", "").also { server.setText(it.toString()) }
+        sharedPreferences.getString(Constants.serverPreference, "").also { server.setText(it.toString()) }
 
         /*loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
@@ -97,6 +97,7 @@ class LoginActivity : AppCompatActivity() {
                     server.text.toString(),
                     appPassword.text.toString()
                 )*/
+                start.isEnabled = true
             }
 
             /*setOnEditorActionListener { _, actionId, _ ->
@@ -110,7 +111,6 @@ class LoginActivity : AppCompatActivity() {
                 false
             }*/
 
-            start.isEnabled = true
             start.setOnClickListener {
                 //loading.visibility = View.VISIBLE
                 //loginViewModel.login(server.text.toString(), appPassword.text.toString())

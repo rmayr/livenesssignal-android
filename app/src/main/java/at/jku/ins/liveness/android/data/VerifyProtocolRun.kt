@@ -9,8 +9,7 @@ import jakarta.ws.rs.client.*
 
 class VerifyProtocolRun : ProtocolRun {
     override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String> {
-        val client = ClientBuilder.newClient();
-        val livenessTarget = client.target(data.serverUrl)
+        val livenessTarget = createClient(data.serverUrl)
 
         if (viewModel.initialSignalData.value == null)
             return Result.Error(Exception("No initial signal data set, please import from prover"))
