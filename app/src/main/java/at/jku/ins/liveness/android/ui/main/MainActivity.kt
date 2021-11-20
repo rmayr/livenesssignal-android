@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
@@ -29,19 +30,27 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // are we recreated (e.g. after pausing to go into settings?)
+        if (savedInstanceState != null) {
+            Log.d(Constants.LOG_TAG, "MainActivity re-created with saveInstanceState")
+            if (! savedInstanceState.getString(Constants.intentParamAppPassword).isNullOrEmpty() )
+                appPassword = savedInstanceState.getString(Constants.intentParamAppPassword)
+            if (! savedInstanceState.getString(Constants.intentParamSignalPassword).isNullOrEmpty() )
+                signalPassword = savedInstanceState.getString(Constants.intentParamSignalPassword)
+        }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // if started from LoginActivity, check if we have proper passwords passed here
+        if (intent.hasExtra(Constants.intentParamAppPassword))
+            appPassword = intent.getStringExtra(Constants.intentParamAppPassword)
+        if (intent.hasExtra(Constants.intentParamSignalPassword))
+            signalPassword = intent.getStringExtra(Constants.intentParamSignalPassword)
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        // listed for changes in shared preferences and update our protocol run data when necessary
-        val listener = OnSharedPreferenceChangeListener { prefs, key ->
-            if (prefs.equals(Constants.serverPreference))
-                updateProtocolRunData()
-            if (prefs.equals(Constants.initialSignalDataPreference) && !key.isNullOrEmpty())
-                updateVerifierInitialSignalData(SignalUtils.hexStringToByteArray(key.toString()))
-        }
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+        serverUrl = sharedPreferences.getString(Constants.serverPreference, "")
+
+        // finally start initializing the UI elements
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = binding.viewPager
@@ -49,10 +58,18 @@ class MainActivity : AppCompatActivity() {
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
 
-        appPassword = intent.getStringExtra(Constants.intentParamAppPassword)
-        signalPassword = intent.getStringExtra(Constants.intentParamSignalPassword)
-        serverUrl = sharedPreferences.getString(Constants.serverPreference, "")
+        // listen for changes in shared preferences and update our protocol run data when necessary
+        // Note: this needs to happen after UI initialization, as the callback requires the fragments to be up!
+        val listener = OnSharedPreferenceChangeListener { prefs, key ->
+            Log.d(Constants.LOG_TAG, "Preferences changed: $prefs = '$key'")
+            if (prefs.equals(Constants.serverPreference))
+                updateProtocolRunData()
+            if (prefs.equals(Constants.initialSignalDataPreference) && !key.isNullOrEmpty())
+                updateVerifierInitialSignalData(SignalUtils.hexStringToByteArray(key.toString()))
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
 
+        // and make sure that at the end, we update our data to be ready
         if (appPassword != null && signalPassword != null && serverUrl != null &&
             appPassword!!.isNotEmpty() && signalPassword!!.isNotEmpty() && serverUrl!!.isNotEmpty()) {
             Log.d(Constants.LOG_TAG, "Started main activity with serverUrl=${serverUrl}, signalPassword=${signalPassword}, appPassword=${appPassword}")
@@ -66,6 +83,14 @@ class MainActivity : AppCompatActivity() {
             //VerifyFragment.getModel().setText("Can't continue: invalid password(s) set")
             Log.e(Constants.LOG_TAG, "Can't continue: invalid password(s) or server URL set")
         }
+    }
+
+    /** Store the in-memory passwords for an activity reload */
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        Log.d(Constants.LOG_TAG, "Saving in-memory password for activity pause")
+        outState.putString(Constants.intentParamAppPassword, appPassword)
+        outState.putString(Constants.intentParamSignalPassword, signalPassword)
     }
 
     fun startSettings(view: View) {

@@ -75,10 +75,11 @@ class SendFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
                 Log.d(Constants.LOG_TAG, "Syncing prover signal data to verifier")
                 // also cache in preferences - but only if not yet present (don't overwrite a previously scanned result)
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                if (! sharedPreferences.getString(Constants.initialSignalDataPreference, "").isNullOrEmpty()) {
+                Log.d(Constants.LOG_TAG, "Currently set initial signal data: '${sharedPreferences.getString(Constants.initialSignalDataPreference, "")}'")
+                if (sharedPreferences.getString(Constants.initialSignalDataPreference, "").isNullOrEmpty()) {
                     // writing the preferences will actually cause the local data in VerifyFragment to be set through the settings listener in MainActivity
                     val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                    editor.putString(Constants.initialSignalDataPreference, pageViewModel.initialSignalData.value.toString())
+                    editor.putString(Constants.initialSignalDataPreference, SignalUtils.byteArrayToHexString(pageViewModel.initialSignalData.value))
                     editor.commit()
                     Log.d(Constants.LOG_TAG, "Synced prover signal data to preferences")
                 }
