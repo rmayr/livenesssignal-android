@@ -15,16 +15,19 @@
     <!-- Preference Titles -->
     <string name="messages_header">Server settings</string>
     <string name="sync_header">Password settings</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Default server</string>
-    <string name="reply_title">Default reply action</string>
-
+    <string name="signal_data_header">Initial signal data</string>
+    <!-- Server Preferences -->
+    <string name="server_title">Default server</string>
     <!-- Sync Preferences -->
-    <string name="sync_title">Require app password to log in</string>
-    <string name="attachment_title">Lock app with biometrics</string>
-    <string name="attachment_summary_on">Unlock with on-device biometrics</string>
-    <string name="attachment_summary_off">Ask app password on every login</string>
+    <string name="require_appPassword_title">Require app password to log in</string>
+    <string name="require_appPassword_on">App password is required to start</string>
+    <string name="require_appPassword_off">App password is stored on device</string>
+    <string name="appPassword_biometricsLock_title">Lock app with biometrics</string>
+    <string name="appPassword_biometricsLock_on">Unlock with on-device biometrics</string>
+    <string name="appPassword_biometricsLock_off">Ask app password on every login</string>
+    <!-- Initial Signal Data Preferences -->
+    <string name="signal_data_title">Initial signal data for verification</string>
+
 
     <!-- Main Preferences -->
     <string name="title_activity_main">MainActivity</string>
@@ -34,6 +37,7 @@
 
     <!-- Verify fragment -->
     <string name="button_check_signals">Check for signals</string>
+    <string name="button_import_data">Import signal data</string>
     <string name="text_check_log_view">Push button to check for signals</string>
 
     <!-- Send fragment -->

@@ -2,6 +2,7 @@ package at.jku.ins.liveness.android.ui.main
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.tabs.TabLayout
@@ -14,6 +15,7 @@ import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.databinding.ActivityMainBinding
+import at.jku.ins.liveness.signals.SignalUtils
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +34,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        // listed for changes in shared preferences and update our protocol run data when necessary
+        val listener = OnSharedPreferenceChangeListener { prefs, key ->
+            if (prefs.equals(Constants.serverPreference))
+                updateProtocolRunData()
+            if (prefs.equals(Constants.initialSignalDataPreference) && !key.isNullOrEmpty())
+                updateVerifierInitialSignalData(SignalUtils.hexStringToByteArray(key.toString()))
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
 
         sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = binding.viewPager
@@ -89,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         /*Snackbar.make(view, "Acting on tab " + selectedTabPosition, Snackbar.LENGTH_LONG)
             .setAction("Action", null).show()*/
 
-        // TODO: make sure we update the server URL, recreating the ProtocolRunData object in both views when anything updates, e.g. when returning from settings
         // update server URL - it may have been changed in settings
         val serverUrl = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.serverPreference, "")
         if (serverUrl == null || serverUrl!!.isEmpty()) {

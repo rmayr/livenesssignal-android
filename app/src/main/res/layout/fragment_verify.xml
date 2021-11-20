@@ -8,12 +8,31 @@
     android:orientation="vertical"
     tools:context="at.jku.ins.liveness.android.ui.main.VerifyFragment">
 
-    <Button
-        android:id="@+id/buttonVerify"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="startVerify"
-        android:text="@string/button_check_signals" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonVerify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="startVerify"
+            android:text="@string/button_check_signals" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/buttonImport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_import_data" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/verifyLogView"

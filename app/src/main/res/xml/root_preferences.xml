@@ -1,10 +1,11 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/messages_header">
 
         <EditTextPreference
             app:key="server"
-            app:title="@string/signature_title"
+            app:title="@string/server_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
@@ -14,15 +15,26 @@
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="requireAppPassword"
-            app:title="@string/sync_title" />
+            app:summaryOff="@string/require_appPassword_off"
+            app:summaryOn="@string/require_appPassword_on"
+            app:title="@string/require_appPassword_title" />
 
         <SwitchPreferenceCompat
             app:dependency="requireAppPassword"
             app:key="biometricsAppPassword"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+            app:summaryOff="@string/appPassword_biometricsLock_off"
+            app:summaryOn="@string/appPassword_biometricsLock_on"
+            app:title="@string/appPassword_biometricsLock_title" />
 
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/signal_data_header">
+
+        <EditTextPreference
+            android:key="initial_signal_data"
+            android:selectAllOnFocus="true"
+            android:singleLine="false"
+            android:title="@string/signal_data_title"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

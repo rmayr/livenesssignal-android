@@ -56,6 +56,7 @@ dependencies {
     implementation 'uk.uuid.slf4j:slf4j-android:1.7.30-0'
 
     implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
     //implementation 'com.google.zxing:android.core:3.3.0'
     //implementation 'com.embarkmobile:zxing-android-minimal:1.2.1@aar'
 

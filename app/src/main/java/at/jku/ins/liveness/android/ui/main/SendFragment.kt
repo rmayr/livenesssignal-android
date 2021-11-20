@@ -1,8 +1,10 @@
 package at.jku.ins.liveness.android.ui.main
 
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.preference.PreferenceManager
+import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRun
 import at.jku.ins.liveness.android.databinding.FragmentSendBinding
 import at.jku.ins.liveness.signals.SignalUtils
@@ -67,14 +71,30 @@ class SendFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
             }
         })
         syncBtn.setOnClickListener {
-            if (pageViewModel.initialSignalData.value != null)
-                (activity as MainActivity).updateVerifierInitialSignalData(pageViewModel.initialSignalData.value!!)
+            if (pageViewModel.initialSignalData.value != null) {
+                Log.d(Constants.LOG_TAG, "Syncing prover signal data to verifier")
+                // also cache in preferences - but only if not yet present (don't overwrite a previously scanned result)
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                if (! sharedPreferences.getString(Constants.initialSignalDataPreference, "").isNullOrEmpty()) {
+                    // writing the preferences will actually cause the local data in VerifyFragment to be set through the settings listener in MainActivity
+                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                    editor.putString(Constants.initialSignalDataPreference, pageViewModel.initialSignalData.value.toString())
+                    editor.commit()
+                    Log.d(Constants.LOG_TAG, "Synced prover signal data to preferences")
+                }
+                else {
+                    // this is a hack mostly for testing, but ugly from a separation point of view
+                    Log.d(Constants.LOG_TAG, "Signal data preferences already set, only syncing temporarily to verifier fragment")
+                    (activity as MainActivity).updateVerifierInitialSignalData(pageViewModel.initialSignalData.value!!)
+                }
+            }
             else
                 Toast.makeText(context, "Initial signal data is null, can't sync to verifier", Toast.LENGTH_LONG).show()
         }
 
         val sendBtn = binding.buttonSend
         sendBtn.setOnClickListener {
+            Log.d(Constants.LOG_TAG, "Starting send action")
             startAction()
         }
 
