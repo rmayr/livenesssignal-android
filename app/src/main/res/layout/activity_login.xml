@@ -81,4 +81,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
 
+    <ImageButton
+        android:id="@+id/biometricButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.958"
+        app:layout_constraintStart_toEndOf="@+id/appPassword"
+        app:srcCompat="@drawable/fingerprint_dialog_fp_icon"
+        tools:layout_editor_absoluteY="150dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

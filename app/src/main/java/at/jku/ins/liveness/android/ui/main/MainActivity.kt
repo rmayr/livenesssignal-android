@@ -59,14 +59,24 @@ class MainActivity : AppCompatActivity() {
 
         // listen for changes in shared preferences and update our protocol run data when necessary
         // Note: this needs to happen after UI initialization, as the callback requires the fragments to be up!
-        val listener = OnSharedPreferenceChangeListener { prefs, key ->
+        // TODO: re-enable once the proper data model is in place
+        /*val listener = OnSharedPreferenceChangeListener { prefs, key ->
             Log.d(Constants.LOG_TAG, "Preferences changed: $prefs = '$key'")
-            if (prefs.equals(Constants.serverPreference))
+            if (key.equals(Constants.serverPreference))
                 updateProtocolRunData()
-            if (prefs.equals(Constants.initialSignalDataPreference) && !key.isNullOrEmpty())
-                updateVerifierInitialSignalData(SignalUtils.hexStringToByteArray(key.toString()))
+            if (key.equals(Constants.initialSignalDataPreference)) {
+                val signalDataPrefs = prefs.getString(Constants.initialSignalDataPreference, "")
+                if (! signalDataPrefs.isNullorEmpty()) {
+                    try {
+                        val signalData = SignalUtils.hexStringToByteArray(signalDataPrefs)
+                        updateVerifierInitialSignalData(signalData)
+                    } catch (e: Exception) {
+                        Log.e(Constants.LOG_TAG, "Unable to parse initial signal data from preferences: $e")
+                    }
+                }
+            }
         }
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)*/
 
         // and make sure that at the end, we update our data to be ready
         if (appPassword != null && signalPassword != null && serverUrl != null &&
@@ -93,7 +103,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startSettings(menuItem: MenuItem?) {
-        startActivity(Intent(this, SettingsActivity::class.java))
+        // need to pass appPassword along to SettingsActivity in case it should be saved on-device
+        val intent = Intent(this, SettingsActivity::class.java)
+        intent.putExtra(Constants.intentParamAppPassword, appPassword)
+        startActivity(intent)
     }
 
     private fun updateProtocolRunData() {

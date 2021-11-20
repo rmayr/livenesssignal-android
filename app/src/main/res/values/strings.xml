@@ -16,6 +16,7 @@
     <string name="prompt_info_subtitle">Please login to get access</string>
     <string name="prompt_info_description">Sample App is using Android biometric authentication</string>
     <string name="prompt_info_use_app_password">Use app password</string>
+    <string name="secret_key_name">appPasswordEncryptor</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Server settings</string>

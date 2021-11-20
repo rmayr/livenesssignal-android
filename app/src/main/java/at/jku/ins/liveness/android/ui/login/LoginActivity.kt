@@ -1,13 +1,20 @@
 package at.jku.ins.liveness.android.ui.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.preference.PreferenceManager
+import at.jku.ins.liveness.android.R
 import at.jku.ins.liveness.android.data.Constants
+import at.jku.ins.liveness.android.data.CIPHERTEXT_WRAPPER
+import at.jku.ins.liveness.android.data.SHARED_PREFS_FILENAME
 import at.jku.ins.liveness.android.ui.main.MainActivity
 import at.jku.ins.liveness.android.databinding.ActivityLoginBinding
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -15,6 +22,15 @@ import java.security.Security
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var biometricPrompt: BiometricPrompt
+    private val cryptographyManager = CryptographyManager()
+    private val ciphertextWrapper
+        get() = cryptographyManager.getCiphertextWrapperFromSharedPrefs(
+            applicationContext,
+            SHARED_PREFS_FILENAME,
+            Context.MODE_PRIVATE,
+            CIPHERTEXT_WRAPPER
+        )
 
     companion object {
         init {
@@ -32,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
 
         val server = binding.server
         val appPassword = binding.appPassword
+        val biometricButton = binding.biometricButton
         val signalPassword = binding.signalPassword
         val start = binding.login
         start.isEnabled = false
@@ -45,6 +62,22 @@ class LoginActivity : AppCompatActivity() {
         }
 
         // TODO: load appPassword if it has been stored locally or unlock with biometrics
+        val canAuthenticate = BiometricManager.from(applicationContext).canAuthenticate()
+        if (canAuthenticate == BiometricManager.BIOMETRIC_SUCCESS) {
+            binding.biometricButton.visibility = View.VISIBLE
+            binding.biometricButton.setOnClickListener {
+                if (ciphertextWrapper != null) {
+                    showBiometricPromptForDecryption()
+                } /*else {
+                    startActivity(Intent(this, EnableBiometricLoginActivity::class.java))
+                }*/
+            }
+        } else {
+            binding.biometricButton.visibility = View.INVISIBLE
+        }
+        /*if (ciphertextWrapper == null) {
+            setupForLoginWithPassword()
+        }*/
 
         // signal password needs to be entered on every app start and is never cached
         signalPassword.apply {
@@ -62,6 +95,48 @@ class LoginActivity : AppCompatActivity() {
 
             start.setOnClickListener {
                 startMain()
+            }
+        }
+    }
+
+    /**
+     * The logic is kept inside onResume instead of onCreate so that authorizing biometrics takes
+     * immediate effect.
+     */
+    override fun onResume() {
+        super.onResume()
+
+        if (ciphertextWrapper != null) {
+            if (binding.appPassword.text.isNullOrEmpty()) {
+                showBiometricPromptForDecryption()
+            } else {
+                // app password still provided manually, so ignore the prompt
+            }
+        }
+    }
+
+    // code from https://developer.android.com/codelabs/biometric-login#2
+    private fun showBiometricPromptForDecryption() {
+        ciphertextWrapper?.let { textWrapper ->
+            val secretKeyName = getString(R.string.secret_key_name)
+            val cipher = cryptographyManager.getInitializedCipherForDecryption(
+                secretKeyName, textWrapper.initializationVector
+            )
+            biometricPrompt =
+                BiometricPromptUtils.createBiometricPrompt(this,
+                    ::decryptServerTokenFromStorage
+                )
+            val promptInfo = BiometricPromptUtils.createPromptInfo(this)
+            biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
+        }
+    }
+
+    private fun decryptServerTokenFromStorage(authResult: BiometricPrompt.AuthenticationResult) {
+        ciphertextWrapper?.let { textWrapper ->
+            authResult.cryptoObject?.cipher?.let {
+                val plaintext =
+                    cryptographyManager.decryptData(textWrapper.ciphertext, it)
+                binding.appPassword.setText(plaintext)
             }
         }
     }
