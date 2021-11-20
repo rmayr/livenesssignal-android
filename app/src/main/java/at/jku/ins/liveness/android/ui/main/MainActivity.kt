@@ -6,13 +6,12 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.view.MenuItem
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import android.view.View
 import android.widget.Toast
 import androidx.preference.PreferenceManager
-//import at.jku.ins.liveness.android.R
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.databinding.ActivityMainBinding
@@ -93,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         outState.putString(Constants.intentParamSignalPassword, signalPassword)
     }
 
-    fun startSettings(view: View) {
+    fun startSettings(menuItem: MenuItem?) {
         startActivity(Intent(this, SettingsActivity::class.java))
     }
 
