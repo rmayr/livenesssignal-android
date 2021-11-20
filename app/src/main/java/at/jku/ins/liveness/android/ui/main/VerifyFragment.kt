@@ -51,6 +51,19 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
             IntentIntegrator(activity).initiateScan()
         }
 
+        // also initialize verifier if we have cached initial signal data
+        val signalDataFromPrefs = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.initialSignalDataPreference, "")
+        if (! signalDataFromPrefs.isNullOrEmpty()) {
+            Log.d(Constants.LOG_TAG, "Found previously stored initial signal data in preferences ('$signalDataFromPrefs'), initializing verifier")
+            try {
+                val signalData = SignalUtils.hexStringToByteArray(signalDataFromPrefs)
+                updateInitialSignalData(signalData)
+            }
+            catch (e: Exception) {
+                Log.e(Constants.LOG_TAG, "Unable to parse initial signal data from preferences ('$signalDataFromPrefs'): $e")
+            }
+        }
+
         return root
     }
 

@@ -60,6 +60,8 @@ dependencies {
     //implementation 'com.google.zxing:android.core:3.3.0'
     //implementation 'com.embarkmobile:zxing-android-minimal:1.2.1@aar'
 
+    implementation 'info.guardianproject.netcipher:netcipher:2.2.0-alpha'
+
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
