@@ -48,6 +48,7 @@ class SendFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
             // create 150x150 bitmap to export initial signal data
             val writer = QRCodeWriter()
             try {
+                // TODO: also encode URL
                 val bitMatrix = writer.encode(SignalUtils.byteArrayToHexString(it), BarcodeFormat.QR_CODE, 150, 150)
                 val width = bitMatrix.width
                 val height = bitMatrix.height
