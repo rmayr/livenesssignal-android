@@ -29,16 +29,7 @@ class MainActivity : AppCompatActivity() {
                 appPassword = savedInstanceState.getString(Constants.intentParamAppPassword)
             if (! savedInstanceState.getString(Constants.intentParamSignalPassword).isNullOrEmpty() )
                 signalPassword = savedInstanceState.getString(Constants.intentParamSignalPassword)
-        }
-
-        // if started from LoginActivity, check if we have proper passwords passed here
-        if (intent.hasExtra(Constants.intentParamAppPassword))
-            appPassword = intent.getStringExtra(Constants.intentParamAppPassword)
-        if (intent.hasExtra(Constants.intentParamSignalPassword))
-            signalPassword = intent.getStringExtra(Constants.intentParamSignalPassword)
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        serverUrl = sharedPreferences.getString(Constants.serverPreference, "")*/
+        }*/
 
         // finally start initializing the UI elements
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,27 +40,6 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
-
-        // listen for changes in shared preferences and update our protocol run data when necessary
-        // Note: this needs to happen after UI initialization, as the callback requires the fragments to be up!
-        // TODO: re-enable once the proper data model is in place
-        /*val listener = OnSharedPreferenceChangeListener { prefs, key ->
-            Log.d(Constants.LOG_TAG, "Preferences changed: $prefs = '$key'")
-            if (key.equals(Constants.serverPreference))
-                updateProtocolRunData()
-            if (key.equals(Constants.initialSignalDataPreference)) {
-                val signalDataPrefs = prefs.getString(Constants.initialSignalDataPreference, "")
-                if (! signalDataPrefs.isNullorEmpty()) {
-                    try {
-                        val signalData = SignalUtils.hexStringToByteArray(signalDataPrefs)
-                        updateVerifierInitialSignalData(signalData)
-                    } catch (e: Exception) {
-                        Log.e(Constants.LOG_TAG, "Unable to parse initial signal data from preferences: $e")
-                    }
-                }
-            }
-        }
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)*/
 
         // if the URL is an .onion, make sure OrBot is available
         OrbotHelper.get(this).init()
