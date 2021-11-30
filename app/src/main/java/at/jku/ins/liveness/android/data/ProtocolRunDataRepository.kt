@@ -23,13 +23,13 @@ class ProtocolRunDataRepository private constructor(context: Context) {
             Log.d(Constants.LOG_TAG, "Preferences changed: '$key'")
 
             if (key.equals(Constants.serverPreference))
-                updateServer(sharedPreferences.getString(Constants.serverPreference, "").orEmpty())
+                _server.postValue(sharedPreferences.getString(Constants.serverPreference, "").orEmpty())
 
             if (key.equals(Constants.initialSignalDataPreference)) {
                 val signalDataPrefs = prefs.getString(Constants.initialSignalDataPreference, "")
                 if (!signalDataPrefs.isNullOrEmpty()) {
                     try {
-                        val signalData = SignalUtils.hexStringToByteArray(signalDataPrefs)
+                        _initialSignalData.postValue(SignalUtils.hexStringToByteArray(signalDataPrefs))
                     } catch (e: Exception) {
                         Log.e(Constants.LOG_TAG,"Unable to parse initial signal data from preferences: $e")
                     }
@@ -127,7 +127,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
             // writing the preferences will actually cause the local data in VerifyFragment to be set through the settings listener in MainActivity
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             editor.putString(Constants.initialSignalDataPreference, SignalUtils.byteArrayToHexString(newData))
-            editor.commit()
+            editor.apply()
             Log.d(Constants.LOG_TAG, "Synced prover signal data to preferences")
         }
         // and post updates to any observers of the getter
@@ -170,7 +170,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
                     instance
                 }
                 else
-                    throw Exception("Tried to intitialize singleton instance of ProtocolRunDataRepository with null context. This should not happen in normal app lifecycle!")
+                    throw Exception("Tried to initialize singleton instance of ProtocolRunDataRepository with null context. This should not happen in normal app lifecycle!")
             }
         }
     }}
