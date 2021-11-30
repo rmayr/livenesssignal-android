@@ -16,6 +16,7 @@ import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunData
 import at.jku.ins.liveness.android.databinding.ActivityMainBinding
 import at.jku.ins.liveness.signals.SignalUtils
+import info.guardianproject.netcipher.proxy.OrbotHelper
 
 class MainActivity : AppCompatActivity() {
 
@@ -77,6 +78,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener)*/
+
+        // if the URL is an .onion, make sure OrBot is available
+        OrbotHelper.get(this).init()
 
         // and make sure that at the end, we update our data to be ready
         if (appPassword != null && signalPassword != null && serverUrl != null &&
