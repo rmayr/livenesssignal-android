@@ -24,6 +24,7 @@ class SendProtocolRun(private val writableData: ProtocolRunDataRepository) : Pro
             lastSignalNumber = data.lastSignalNumber
         }
 
+        // TODO: this tries to create an authenticated key, which is wrong for that case
         val iv = cryptographyManager.getStaticIv()
         val proverData = ProverData(
             data.signalPassword,

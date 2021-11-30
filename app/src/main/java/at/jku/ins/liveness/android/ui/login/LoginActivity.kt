@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var biometricPrompt: BiometricPrompt
 
-    private val data: ProtocolRunDataRepository = ProtocolRunDataRepository.getInstance(this.applicationContext)
+    private lateinit var data: ProtocolRunDataRepository
 
     private val cryptographyManager = CryptographyManager()
     private val ciphertextWrapper
@@ -48,6 +48,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        data = ProtocolRunDataRepository.getInstance(this.applicationContext)
+
         val server = binding.server
         val appPassword = binding.appPassword
         val biometricButton = binding.biometricButton
@@ -56,7 +58,9 @@ class LoginActivity : AppCompatActivity() {
         start.isEnabled = false
 
         // populate the server field from stored preferences (if stored before)
-        data.server.also { server.setText(it.toString()) }
+        data.server.also {
+            if (! it.value.isNullOrEmpty()) server.setText(it.value.toString())
+        }
         // TODO: remove this line
         //sharedPreferences.getString(Constants.serverPreference, "").also { server.setText(it.toString()) }
         server.afterTextChanged {
