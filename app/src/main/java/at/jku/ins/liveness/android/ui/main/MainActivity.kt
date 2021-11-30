@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 import at.jku.ins.liveness.android.databinding.ActivityMainBinding
+import info.guardianproject.netcipher.proxy.OrbotHelper
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -48,6 +49,30 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
+
+        // listen for changes in shared preferences and update our protocol run data when necessary
+        // Note: this needs to happen after UI initialization, as the callback requires the fragments to be up!
+        // TODO: re-enable once the proper data model is in place
+        /*val listener = OnSharedPreferenceChangeListener { prefs, key ->
+            Log.d(Constants.LOG_TAG, "Preferences changed: $prefs = '$key'")
+            if (key.equals(Constants.serverPreference))
+                updateProtocolRunData()
+            if (key.equals(Constants.initialSignalDataPreference)) {
+                val signalDataPrefs = prefs.getString(Constants.initialSignalDataPreference, "")
+                if (! signalDataPrefs.isNullorEmpty()) {
+                    try {
+                        val signalData = SignalUtils.hexStringToByteArray(signalDataPrefs)
+                        updateVerifierInitialSignalData(signalData)
+                    } catch (e: Exception) {
+                        Log.e(Constants.LOG_TAG, "Unable to parse initial signal data from preferences: $e")
+                    }
+                }
+            }
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)*/
+
+        // if the URL is an .onion, make sure OrBot is available
+        OrbotHelper.get(this).init()
 
         // and make sure that at the end, we update our data to be ready
         if (!data.appPassword.value.isNullOrEmpty() && !data.signalPassword.value.isNullOrEmpty() && !data.server.value.isNullOrEmpty()) {
