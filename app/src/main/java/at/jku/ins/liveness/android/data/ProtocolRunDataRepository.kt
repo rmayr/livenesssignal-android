@@ -23,13 +23,13 @@ class ProtocolRunDataRepository private constructor(context: Context) {
             Log.d(Constants.LOG_TAG, "Preferences changed: '$key'")
 
             if (key.equals(Constants.serverPreference))
-                _server.postValue(sharedPreferences.getString(Constants.serverPreference, "").orEmpty())
+                _server.value = sharedPreferences.getString(Constants.serverPreference, "").orEmpty()
 
             if (key.equals(Constants.initialSignalDataPreference)) {
                 val signalDataPrefs = prefs.getString(Constants.initialSignalDataPreference, "")
                 if (!signalDataPrefs.isNullOrEmpty()) {
                     try {
-                        _initialSignalData.postValue(SignalUtils.hexStringToByteArray(signalDataPrefs))
+                        _initialSignalData.setValue(SignalUtils.hexStringToByteArray(signalDataPrefs))
                     } catch (e: Exception) {
                         Log.e(Constants.LOG_TAG,"Unable to parse initial signal data from preferences: $e")
                     }
@@ -37,7 +37,6 @@ class ProtocolRunDataRepository private constructor(context: Context) {
             }
         }
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
-
     }
 
     /** Internal storage for server URL. */
@@ -47,10 +46,13 @@ class ProtocolRunDataRepository private constructor(context: Context) {
     val server: LiveData<String>
         get() {
             if (_server.value.isNullOrEmpty()) {
+                Log.d(Constants.LOG_TAG, "serverUrl is empty while trying to get from ProtocolRunDataRepository, trying to read from preferences")
                 sharedPreferences.getString(Constants.serverPreference, "").also {
-                    _server.postValue(it)
+                    Log.d(Constants.LOG_TAG, "Found stored $Constants.serverPreference preference: $it")
+                    _server.value = it
                 }
             }
+            Log.d(Constants.LOG_TAG, "Returning: $_server with value ${_server.value}")
             return _server
         }
     /** Update server URL. This will both update the in-memory @_server variable in this object
@@ -61,7 +63,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
         editor.putString(Constants.serverPreference, s)
         editor.apply()
         // and post updates to any observers of the getter
-        _server.postValue(s)
+        _server.value = s
     }
 
     /** Internal storage for local app password. */
@@ -77,7 +79,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
     fun updateAppPassword(s: String) {
         // TODO: if preferences are set to store the local app password, then do so
         // and post updates to any observers of the getter
-        _appPassword.postValue(s)
+        _appPassword.value = s
     }
 
     /** Internal storage for shared signal password. */
@@ -90,7 +92,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
     /** Update shared signal password. This only updates the in-memory @_signalPassword variable. */
     fun updateSignalPassword(s: String) {
         // post updates to any observers of the getter
-        _signalPassword.postValue(s)
+        _signalPassword.value = s
     }
 
     /** Internal storage for initial signal data shared from prover to verifier. */
@@ -107,7 +109,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
                         Log.d(Constants.LOG_TAG,"Found previously stored initial signal data in preferences ('$it'), initializing verifier")
                         // ... then try to parse back into ByteArray representation
                         try {
-                            _initialSignalData.postValue(SignalUtils.hexStringToByteArray(it))
+                            _initialSignalData.setValue(SignalUtils.hexStringToByteArray(it))
                         } catch (e: Exception) {
                             Log.e(Constants.LOG_TAG,"Unable to parse initial signal data from preferences ('$it'): $e")
                         }
@@ -131,7 +133,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
             Log.d(Constants.LOG_TAG, "Synced prover signal data to preferences")
         }
         // and post updates to any observers of the getter
-        _initialSignalData.postValue(newData)
+        _initialSignalData.value = newData
     }
 
     private val _lastSignalNumber = MutableLiveData<Int>()
@@ -141,7 +143,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
         }
     fun updateLastSignalNumber(i: Int) {
         // post updates to any observers of the getter
-        _lastSignalNumber.postValue(i)
+        _lastSignalNumber.value = i
     }
 
     /** Returns a current snapshot of the internally stored data values for starting a protocol run. */

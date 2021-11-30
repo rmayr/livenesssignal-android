@@ -58,8 +58,12 @@ class LoginActivity : AppCompatActivity() {
         start.isEnabled = false
 
         // populate the server field from stored preferences (if stored before)
-        data.server.also {
-            if (! it.value.isNullOrEmpty()) server.setText(it.value.toString())
+        data.server.value.also {
+            Log.d(Constants.LOG_TAG, "Loading previously set serverUrl: $it")
+            if (! it.isNullOrEmpty()) {
+                Log.d(Constants.LOG_TAG, "Found previously set serverUrl: $it")
+                server.setText(it)
+            }
         }
         // TODO: remove this line
         //sharedPreferences.getString(Constants.serverPreference, "").also { server.setText(it.toString()) }
