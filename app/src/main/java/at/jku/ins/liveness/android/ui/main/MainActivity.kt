@@ -2,7 +2,6 @@ package at.jku.ins.liveness.android.ui.main
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
@@ -14,18 +13,14 @@ import android.widget.Toast
 import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunData
+import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 import at.jku.ins.liveness.android.databinding.ActivityMainBinding
-import at.jku.ins.liveness.signals.SignalUtils
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
-    private lateinit var sharedPreferences: SharedPreferences
 
-    private var appPassword: String? = null
-    private var signalPassword: String? = null
-    private var serverUrl: String? = null
+    private val data: ProtocolRunDataRepository = ProtocolRunDataRepository.getInstance(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,12 +90,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** Store the in-memory passwords for an activity reload */
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+    /*override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         super.onSaveInstanceState(outState, outPersistentState)
         Log.d(Constants.LOG_TAG, "Saving in-memory password for activity pause")
         outState.putString(Constants.intentParamAppPassword, appPassword)
         outState.putString(Constants.intentParamSignalPassword, signalPassword)
-    }
+    }*/
 
     fun startSettings(menuItem: MenuItem?) {
         // need to pass appPassword along to SettingsActivity in case it should be saved on-device

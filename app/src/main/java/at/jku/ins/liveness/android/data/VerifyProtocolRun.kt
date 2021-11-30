@@ -7,7 +7,7 @@ import at.jku.ins.liveness.signals.Signal
 import at.jku.ins.liveness.signals.Verifier
 
 class VerifyProtocolRun : ProtocolRun {
-    override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String> {
+    override suspend fun makeRequest(viewModel: PageViewModel): Result<String> {
         val livenessTarget = createClient(data.serverUrl)
 
         if (viewModel.initialSignalData.value == null)

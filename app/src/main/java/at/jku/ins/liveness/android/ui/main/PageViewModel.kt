@@ -7,10 +7,9 @@ import at.jku.ins.liveness.android.data.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class PageViewModel : ViewModel() {
+class PageViewModel() : ViewModel() {
     private val _textBuilder = StringBuilder()
     val text = MutableLiveData<String>()
-    val initialSignalData = MutableLiveData<ByteArray>()
     val success = MutableLiveData<Boolean>()
 
     fun setText(newText: String) {

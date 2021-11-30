@@ -16,8 +16,8 @@ import jakarta.ws.rs.client.ClientBuilder
 import org.glassfish.jersey.client.ClientProperties
 import org.glassfish.jersey.client.ClientConfig
 
-sealed interface ProtocolRun {
-    suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String>
+interface ProtocolRun {
+    abstract suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String>
 
     fun createClient(serverUrl: String): WebTarget {
         val config = ClientConfig()

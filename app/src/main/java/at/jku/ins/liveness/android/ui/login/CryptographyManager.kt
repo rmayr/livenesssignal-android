@@ -3,8 +3,10 @@ package at.jku.ins.liveness.android.ui.login
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import at.jku.ins.liveness.android.data.Constants
 import com.google.gson.Gson
 import java.nio.charset.Charset
+import java.security.KeyException
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -13,6 +15,7 @@ import javax.crypto.spec.GCMParameterSpec
 
 /** Handles encryption and decryption
  * Taken directly from https://developer.android.com/codelabs/biometric-login
+ * Adapted to support storing an IV as secret key.
  */
 interface CryptographyManager {
     fun getInitializedCipherForEncryption(keyName: String): Cipher
@@ -28,6 +31,12 @@ interface CryptographyManager {
      * The Cipher created with [getInitializedCipherForDecryption] is used here
      */
     fun decryptData(ciphertext: ByteArray, cipher: Cipher): String
+
+    /**
+     * On first call, creates a random secret key that is interpreted as IV. On all calls (first
+     * and subsequent), returns that same IV.
+     */
+    fun getStaticIv(): ByteArray
 
     fun persistCiphertextWrapperToSharedPrefs(
         ciphertextWrapper: CiphertextWrapper,
@@ -116,6 +125,14 @@ private class CryptographyManagerImpl : CryptographyManager {
         )
         keyGenerator.init(keyGenParams)
         return keyGenerator.generateKey()
+    }
+
+    override fun getStaticIv(): ByteArray {
+        val iv = getOrCreateSecretKey(Constants.IV_KEY_NAME)
+        if (iv.encoded == null)
+            throw KeyException("Unable to create or retrieve IV key with name '$Constants.IV_KEY_NAME' from Android keystore")
+        else
+            return iv.encoded
     }
 
     override fun persistCiphertextWrapperToSharedPrefs(

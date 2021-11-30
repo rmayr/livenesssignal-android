@@ -9,9 +9,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.preference.*
 import at.jku.ins.liveness.android.R
-import at.jku.ins.liveness.android.data.CIPHERTEXT_WRAPPER
 import at.jku.ins.liveness.android.data.Constants
-import at.jku.ins.liveness.android.data.SHARED_PREFS_FILENAME
 import at.jku.ins.liveness.android.ui.login.BiometricPromptUtils
 import at.jku.ins.liveness.android.ui.login.CryptographyManager
 
@@ -82,9 +80,9 @@ class SettingsActivity : AppCompatActivity() {
                 cryptographyManager.persistCiphertextWrapperToSharedPrefs(
                     encryptedServerTokenWrapper,
                     applicationContext,
-                    SHARED_PREFS_FILENAME,
+                    Constants.BIOMETRIC_PREFERENCES,
                     Context.MODE_PRIVATE,
-                    CIPHERTEXT_WRAPPER
+                    Constants.CIPHERTEXT_WRAPPER
                 )
             }
         }

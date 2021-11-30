@@ -10,11 +10,9 @@ import android.view.View
 import android.widget.EditText
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
-import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.R
 import at.jku.ins.liveness.android.data.Constants
-import at.jku.ins.liveness.android.data.CIPHERTEXT_WRAPPER
-import at.jku.ins.liveness.android.data.SHARED_PREFS_FILENAME
+import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 import at.jku.ins.liveness.android.ui.main.MainActivity
 import at.jku.ins.liveness.android.databinding.ActivityLoginBinding
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -22,14 +20,18 @@ import java.security.Security
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
+
     private lateinit var biometricPrompt: BiometricPrompt
+
+    private val data: ProtocolRunDataRepository = ProtocolRunDataRepository.getInstance(this.applicationContext)
+
     private val cryptographyManager = CryptographyManager()
     private val ciphertextWrapper
         get() = cryptographyManager.getCiphertextWrapperFromSharedPrefs(
             applicationContext,
-            SHARED_PREFS_FILENAME,
+            Constants.BIOMETRIC_PREFERENCES,
             Context.MODE_PRIVATE,
-            CIPHERTEXT_WRAPPER
+            Constants.CIPHERTEXT_WRAPPER
         )
 
     companion object {
@@ -53,10 +55,9 @@ class LoginActivity : AppCompatActivity() {
         val start = binding.login
         start.isEnabled = false
 
-        // initialize with defaults from preferences
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
-        sharedPreferences.getString(Constants.serverPreference, "").also { server.setText(it.toString()) }
+        data.server.also { server.setText(it.toString()) }
+        // TODO: remove this line
+        //sharedPreferences.getString(Constants.serverPreference, "").also { server.setText(it.toString()) }
         server.afterTextChanged {
             //Log.d(Constants.LOG_TAG, "Server URL changed to ${server.text}")
         }
@@ -143,8 +144,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startMain(/*model: ProtocolRunData*/) {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(Constants.intentParamAppPassword, binding.appPassword.text.toString())
-        intent.putExtra(Constants.intentParamSignalPassword, binding.signalPassword.text.toString())
+/*        intent.putExtra(Constants.intentParamAppPassword, binding.appPassword.text.toString())
+        intent.putExtra(Constants.intentParamSignalPassword, binding.signalPassword.text.toString())*/
         startActivity(intent)
     }
 }

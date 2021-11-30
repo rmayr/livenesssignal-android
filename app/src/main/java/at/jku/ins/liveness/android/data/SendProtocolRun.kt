@@ -1,6 +1,8 @@
 package at.jku.ins.liveness.android.data
 
+import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.ConfigConstants
+import at.jku.ins.liveness.android.ui.login.CryptographyManager
 import at.jku.ins.liveness.android.ui.main.PageViewModel
 import at.jku.ins.liveness.protocol.RequestMessage.TYPE
 import at.jku.ins.liveness.signals.Prover
@@ -8,12 +10,16 @@ import at.jku.ins.liveness.signals.SignalUtils
 import at.jku.ins.liveness.signals.data.ProverData
 
 class SendProtocolRun() : ProtocolRun {
+    private val cryptographyManager = CryptographyManager()
+
     override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String> {
         val livenessTarget = createClient(data.serverUrl)
 
-        // TODO: get random IV on first startup and save it
+        // initialize with defaults from preferences
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences()
+
         // TODO: retrieve the last nextSignalNumber
-        val iv
+        val iv = cryptographyManager.getStaticIv()
         val lastSignalNumber
 
         val proverData = ProverData(data.signalPassword, data.appPassword, Constants.signalCount, iv, lastSignalNumber)
