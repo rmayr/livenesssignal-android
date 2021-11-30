@@ -59,7 +59,6 @@ class LoginActivity : AppCompatActivity() {
 
         // populate the server field from stored preferences (if stored before)
         data.server.value.also {
-            Log.d(Constants.LOG_TAG, "Loading previously set serverUrl: $it")
             if (! it.isNullOrEmpty()) {
                 Log.d(Constants.LOG_TAG, "Found previously set serverUrl: $it")
                 server.setText(it)
@@ -68,8 +67,7 @@ class LoginActivity : AppCompatActivity() {
         // TODO: remove this line
         //sharedPreferences.getString(Constants.serverPreference, "").also { server.setText(it.toString()) }
         server.afterTextChanged {
-            Log.d(Constants.LOG_TAG, "Server URL changed to ${server.text}")
-            data.updateServer(server.toString())
+            data.updateServer(server.text.toString())
         }
 
         // TODO: load appPassword if it has been stored locally or unlock with biometrics
@@ -91,15 +89,13 @@ class LoginActivity : AppCompatActivity() {
         }*/
 
         appPassword.afterTextChanged {
-            Log.d(Constants.LOG_TAG, "App password changed to ${appPassword.text}")
-            data.updateAppPassword(appPassword.toString())
+            data.updateAppPassword(appPassword.text.toString())
         }
 
         // signal password needs to be entered on every app start and is never cached
         signalPassword.apply {
             afterTextChanged {
-                Log.d(Constants.LOG_TAG, "Signal password changed to ${signalPassword.text}")
-                data.updateSignalPassword(signalPassword.toString())
+                data.updateSignalPassword(signalPassword.text.toString())
                 start.isEnabled = true
             }
 

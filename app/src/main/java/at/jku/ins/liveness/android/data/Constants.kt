@@ -13,13 +13,13 @@ class Constants {
         public val intentParamAppPassword = "appPassword"
         public val intentParamSignalPassword = "signalPassword"
 
-        const val LOG_TAG = "LivenessSignal"
+        public const val LOG_TAG = "LivenessSignal"
 
-        const val PROTOCOL_DATA_PREFERENCES = "protocol_preferences"
+        public val PROTOCOL_DATA_PREFERENCES = "protocol_preferences"
 
-        const val BIOMETRIC_PREFERENCES = "biometric_preferences"
-        const val CIPHERTEXT_WRAPPER = "ciphertext_wrapper"
+        public const val BIOMETRIC_PREFERENCES = "biometric_preferences"
+        public const val CIPHERTEXT_WRAPPER = "ciphertext_wrapper"
 
-        const val IV_KEY_NAME = "static_iv"
+        public const val IV_KEY_NAME = "static_iv"
     }
 }

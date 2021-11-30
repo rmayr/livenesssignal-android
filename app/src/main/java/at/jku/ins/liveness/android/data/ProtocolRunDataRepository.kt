@@ -58,6 +58,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
     /** Update server URL. This will both update the in-memory @_server variable in this object
      * as well as the preference value. */
     fun updateServer(s: String) {
+        Log.d(Constants.LOG_TAG, "Updating serverUrl to: $s")
         // update preferences
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
         editor.putString(Constants.serverPreference, s)

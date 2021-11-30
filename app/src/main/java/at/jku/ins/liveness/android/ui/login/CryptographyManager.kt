@@ -70,7 +70,7 @@ private class CryptographyManagerImpl : CryptographyManager {
 
     override fun getInitializedCipherForEncryption(keyName: String): Cipher {
         val cipher = getCipher()
-        val secretKey = getOrCreateSecretKey(keyName)
+        val secretKey = getOrCreateSecretKey(keyName, true)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
         return cipher
     }
@@ -80,7 +80,7 @@ private class CryptographyManagerImpl : CryptographyManager {
         initializationVector: ByteArray
     ): Cipher {
         val cipher = getCipher()
-        val secretKey = getOrCreateSecretKey(keyName)
+        val secretKey = getOrCreateSecretKey(keyName, true)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(128, initializationVector))
         return cipher
     }
@@ -100,7 +100,7 @@ private class CryptographyManagerImpl : CryptographyManager {
         return Cipher.getInstance(transformation)
     }
 
-    private fun getOrCreateSecretKey(keyName: String): SecretKey {
+    private fun getOrCreateSecretKey(keyName: String, requireUserAuth: Boolean): SecretKey {
         // If Secretkey was previously created for that keyName, then grab and return it.
         val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE)
         keyStore.load(null) // Keystore must be loaded before it can be accessed
@@ -115,7 +115,7 @@ private class CryptographyManagerImpl : CryptographyManager {
             setBlockModes(ENCRYPTION_BLOCK_MODE)
             setEncryptionPaddings(ENCRYPTION_PADDING)
             setKeySize(KEY_SIZE)
-            setUserAuthenticationRequired(true)
+            setUserAuthenticationRequired(requireUserAuth)
         }
 
         val keyGenParams = paramsBuilder.build()
@@ -128,7 +128,7 @@ private class CryptographyManagerImpl : CryptographyManager {
     }
 
     override fun getStaticIv(): ByteArray {
-        val iv = getOrCreateSecretKey(Constants.IV_KEY_NAME)
+        val iv = getOrCreateSecretKey(Constants.IV_KEY_NAME, false)
         if (iv.encoded == null)
             throw KeyException("Unable to create or retrieve IV key with name '$Constants.IV_KEY_NAME' from Android keystore")
         else

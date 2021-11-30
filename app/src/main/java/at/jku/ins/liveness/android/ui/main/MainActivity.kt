@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
 
         // and make sure that at the end, we update our data to be ready
-        if (data.appPassword.value.isNullOrEmpty() && data.signalPassword.value.isNullOrEmpty() && data.server.value.isNullOrEmpty()) {
+        if (!data.appPassword.value.isNullOrEmpty() && !data.signalPassword.value.isNullOrEmpty() && !data.server.value.isNullOrEmpty()) {
             Log.d(Constants.LOG_TAG, "Started main activity with serverUrl=${data.server.value}, signalPassword=${data.signalPassword.value}, appPassword=${data.appPassword.value}")
 
             /*val fab: FloatingActionButton = binding.fab
