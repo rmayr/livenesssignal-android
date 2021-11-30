@@ -2,24 +2,19 @@ package at.jku.ins.liveness.android.ui.main
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRun
 import at.jku.ins.liveness.android.data.ProtocolRunData
+import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 
 /**
  * Common send and verify fragment base class
  */
 open class ViewFragment(private val protocol: ProtocolRun) : Fragment() {
     internal lateinit var pageViewModel: PageViewModel
-    internal var data: ProtocolRunData? = null
+    internal val data: ProtocolRunDataRepository = ProtocolRunDataRepository.getInstance(context)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +23,9 @@ open class ViewFragment(private val protocol: ProtocolRun) : Fragment() {
         }*/
     }
 
-    fun setData(_data: ProtocolRunData) {
-        data = _data
-    }
-
     fun startAction() {
-        val _data = data
+        // at this point get a snapshot of protocol run data
+        val _data = data.getProtocolRunData()
         if (_data == null) {
             Log.e(Constants.LOG_TAG, "Can't continue: protocol run data not initialized")
             return

@@ -22,10 +22,6 @@ class PageViewModel() : ViewModel() {
         text.postValue(_textBuilder.toString())
     }
 
-    fun setInitialSignalData(newInitialSignalData: ByteArray) {
-        initialSignalData.postValue(newInitialSignalData)
-    }
-
     fun runNetworkRequest(protocol: ProtocolRun, data: ProtocolRunData, viewModel: PageViewModel = this) {
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = protocol.makeRequest(viewModel, data)) {

@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import androidx.biometric.BiometricManager
@@ -20,7 +21,6 @@ import java.security.Security
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-
     private lateinit var biometricPrompt: BiometricPrompt
 
     private val data: ProtocolRunDataRepository = ProtocolRunDataRepository.getInstance(this.applicationContext)
@@ -55,11 +55,13 @@ class LoginActivity : AppCompatActivity() {
         val start = binding.login
         start.isEnabled = false
 
+        // populate the server field from stored preferences (if stored before)
         data.server.also { server.setText(it.toString()) }
         // TODO: remove this line
         //sharedPreferences.getString(Constants.serverPreference, "").also { server.setText(it.toString()) }
         server.afterTextChanged {
-            //Log.d(Constants.LOG_TAG, "Server URL changed to ${server.text}")
+            Log.d(Constants.LOG_TAG, "Server URL changed to ${server.text}")
+            data.updateServer(server.toString())
         }
 
         // TODO: load appPassword if it has been stored locally or unlock with biometrics
@@ -80,10 +82,16 @@ class LoginActivity : AppCompatActivity() {
             setupForLoginWithPassword()
         }*/
 
+        appPassword.afterTextChanged {
+            Log.d(Constants.LOG_TAG, "App password changed to ${appPassword.text}")
+            data.updateAppPassword(appPassword.toString())
+        }
+
         // signal password needs to be entered on every app start and is never cached
         signalPassword.apply {
             afterTextChanged {
-                //Log.d(Constants.LOG_TAG, "Signal password changed to ${signalPassword.text}")
+                Log.d(Constants.LOG_TAG, "Signal password changed to ${signalPassword.text}")
+                data.updateSignalPassword(signalPassword.toString())
                 start.isEnabled = true
             }
 
@@ -93,10 +101,10 @@ class LoginActivity : AppCompatActivity() {
                 }
                 false
             }*/
+        }
 
-            start.setOnClickListener {
-                startMain()
-            }
+        start.setOnClickListener {
+            startMain()
         }
     }
 
@@ -144,6 +152,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startMain(/*model: ProtocolRunData*/) {
         val intent = Intent(this, MainActivity::class.java)
+        // TODO: remove the intent parameters
 /*        intent.putExtra(Constants.intentParamAppPassword, binding.appPassword.text.toString())
         intent.putExtra(Constants.intentParamSignalPassword, binding.signalPassword.text.toString())*/
         startActivity(intent)

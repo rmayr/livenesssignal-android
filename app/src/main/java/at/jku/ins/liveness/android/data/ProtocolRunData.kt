@@ -8,7 +8,7 @@ data class ProtocolRunData(
     val signalPassword: String,
     val appPassword: String,
     val serverUrl: String,
-    val initialSignalData: ByteArray,
-    val lastSignalNumber: Int
+    val initialSignalData: ByteArray?,
+    val lastSignalNumber: Int?
 )
 

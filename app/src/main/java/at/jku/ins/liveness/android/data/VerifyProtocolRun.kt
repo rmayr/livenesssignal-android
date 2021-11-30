@@ -7,17 +7,17 @@ import at.jku.ins.liveness.signals.Signal
 import at.jku.ins.liveness.signals.Verifier
 
 class VerifyProtocolRun : ProtocolRun {
-    override suspend fun makeRequest(viewModel: PageViewModel): Result<String> {
+    override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String> {
         val livenessTarget = createClient(data.serverUrl)
 
-        if (viewModel.initialSignalData.value == null)
+        if (data.initialSignalData == null)
             return Result.Error(Exception("No initial signal data set, please import from prover"))
 
         val verifier = Verifier(
             ConfigConstants.ALGORITHM,
             data.appPassword,
             data.signalPassword,
-            viewModel.initialSignalData.value
+            data.initialSignalData
         )
 
         try {

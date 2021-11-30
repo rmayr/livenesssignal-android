@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import at.jku.ins.liveness.android.R
+import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 import at.jku.ins.liveness.android.data.SendProtocolRun
 import at.jku.ins.liveness.android.data.VerifyProtocolRun
 
@@ -20,7 +21,10 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm) {
 
     // keep the view fragments as singletons
-    private val fragments = arrayOf<ViewFragment>(VerifyFragment(VerifyProtocolRun()), SendFragment(SendProtocolRun()))
+    private val fragments = arrayOf<ViewFragment>(
+        VerifyFragment(VerifyProtocolRun()),
+        // TODO: this passing the repository to SendProtocolRun is a bit of a hack, maybe solve better?
+        SendFragment(SendProtocolRun(ProtocolRunDataRepository.getInstance(context))))
 
     override fun getItem(position: Int): ViewFragment {
         return when (position) {

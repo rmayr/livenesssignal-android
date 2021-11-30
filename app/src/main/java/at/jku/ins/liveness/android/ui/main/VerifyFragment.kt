@@ -38,7 +38,7 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
         })
 
         val verifyBtn = binding.buttonVerify
-        super.pageViewModel.initialSignalData.observe(viewLifecycleOwner, Observer {
+        data.initialSignalData.observe(viewLifecycleOwner, Observer {
             if (it != null)
                 verifyBtn.isEnabled = true
         })
@@ -51,43 +51,21 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
             IntentIntegrator(activity).initiateScan()
         }
 
-        // also initialize verifier if we have cached initial signal data
-        val signalDataFromPrefs = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.initialSignalDataPreference, "")
-        if (! signalDataFromPrefs.isNullOrEmpty()) {
-            Log.d(Constants.LOG_TAG, "Found previously stored initial signal data in preferences ('$signalDataFromPrefs'), initializing verifier")
-            try {
-                val signalData = SignalUtils.hexStringToByteArray(signalDataFromPrefs)
-                updateInitialSignalData(signalData)
-            }
-            catch (e: Exception) {
-                Log.e(Constants.LOG_TAG, "Unable to parse initial signal data from preferences ('$signalDataFromPrefs'): $e")
-            }
-        }
-
         return root
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         Log.d(Constants.LOG_TAG, "Trying to decode QRcode text after scan")
-        val scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        val scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent)
         if (scanningResult != null) {
             val scanContent = scanningResult.contents
             Log.d(Constants.LOG_TAG, "Decoded initial signal data: $scanContent")
-            pageViewModel.setInitialSignalData(SignalUtils.hexStringToByteArray(scanContent))
-            // also cache in preferences
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putString(Constants.initialSignalDataPreference, scanContent)
-            editor.commit()
+            data.updateInitialSignalData(SignalUtils.hexStringToByteArray(scanContent), true)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun updateInitialSignalData(initialSignalData: ByteArray) {
-        pageViewModel.setInitialSignalData(initialSignalData)
     }
 }
