@@ -10,12 +10,14 @@ import androidx.biometric.BiometricPrompt
 import androidx.preference.*
 import at.jku.ins.liveness.android.R
 import at.jku.ins.liveness.android.data.Constants
+import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 import at.jku.ins.liveness.android.ui.login.BiometricPromptUtils
 import at.jku.ins.liveness.android.ui.login.CryptographyManager
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var cryptographyManager: CryptographyManager
-    private var appPassword: String? = null
+
+    private val data: ProtocolRunDataRepository = ProtocolRunDataRepository.getInstance(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,10 +30,6 @@ class SettingsActivity : AppCompatActivity() {
         }
         // TODO: might want to enable again
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
-
-        // if we got passed the appPassword (we should have...), remember it
-        if (intent.hasExtra(Constants.intentParamAppPassword))
-            appPassword = intent.getStringExtra(Constants.intentParamAppPassword)
 
         // register a preferences listener: if the biometrics preference is turned on, show the prompt to store
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
@@ -73,7 +71,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun encryptAndStoreServerToken(authResult: BiometricPrompt.AuthenticationResult) {
         authResult.cryptoObject?.cipher?.apply {
-            val token = appPassword
+            val token = data.appPassword.value
             if (! token.isNullOrEmpty()) {
                 Log.d(Constants.LOG_TAG, "The appPassword to store is $token")
                 val encryptedServerTokenWrapper = cryptographyManager.encryptData(token, this)

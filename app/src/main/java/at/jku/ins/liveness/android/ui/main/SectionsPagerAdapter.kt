@@ -23,8 +23,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
     // keep the view fragments as singletons
     private val fragments = arrayOf<ViewFragment>(
         VerifyFragment(VerifyProtocolRun()),
-        // TODO: this passing the repository to SendProtocolRun is a bit of a hack, maybe solve better?
-        SendFragment(SendProtocolRun(ProtocolRunDataRepository.getInstance(context))))
+        SendFragment(SendProtocolRun()))
 
     override fun getItem(position: Int): ViewFragment {
         return when (position) {

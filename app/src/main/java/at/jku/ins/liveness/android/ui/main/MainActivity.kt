@@ -90,11 +90,11 @@ class MainActivity : AppCompatActivity() {
             Log.e(Constants.LOG_TAG, "Can't continue: invalid password(s) or server URL set")
             Toast.makeText(applicationContext, "Can't continue: invalid password(s) or server URL set", Toast.LENGTH_LONG).show()
         }
-    }
+    }*/
 
     fun updateVerifierInitialSignalData(initialSignalData: ByteArray) {
         (sectionsPagerAdapter.getItem(0) as VerifyFragment).updateInitialSignalData(initialSignalData)
-    }*/
+    }
 
     /*private fun startSignalAction(view: View) {
         val tabLayout = findViewById<View>(R.id.tabs) as TabLayout

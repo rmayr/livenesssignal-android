@@ -25,7 +25,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
             if (key.equals(Constants.serverPreference))
                 _server.value = sharedPreferences.getString(Constants.serverPreference, "").orEmpty()
 
-            if (key.equals(Constants.initialSignalDataPreference)) {
+            /*if (key.equals(Constants.initialSignalDataPreference)) {
                 val signalDataPrefs = prefs.getString(Constants.initialSignalDataPreference, "")
                 if (!signalDataPrefs.isNullOrEmpty()) {
                     try {
@@ -34,7 +34,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
                         Log.e(Constants.LOG_TAG,"Unable to parse initial signal data from preferences: $e")
                     }
                 }
-            }
+            }*/
         }
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
     }
@@ -96,63 +96,126 @@ class ProtocolRunDataRepository private constructor(context: Context) {
         _signalPassword.value = s
     }
 
-    /** Internal storage for initial signal data shared from prover to verifier. */
-    private val _initialSignalData = MutableLiveData<ByteArray>()
-    /** This ByteArray represents the initial signal data shared from prover to verifier.
+    /** Internal storage for signal encrypted key data as used by the verifier. */
+    private val _verifierKeyData = MutableLiveData<ByteArray>()
+    /** This ByteArray represents signal encrypted key data as used by the verifier.
      * On reading, it will check SharedPreferences and initialize from there. */
-    val initialSignalData: LiveData<ByteArray>
+    val verifierKeyData: LiveData<ByteArray>
         get() {
             // if not yet set, ...
-            if (_initialSignalData.value == null) {
+            if (_verifierKeyData.value == null) {
                 // ... and we have a cached value set in SharedPreferences ...
-                sharedPreferences.getString(Constants.initialSignalDataPreference, "").also {
+                sharedPreferences.getString(Constants.verifierEncKeyDataPreference, "").also {
                     if (! it.isNullOrEmpty()) {
-                        Log.d(Constants.LOG_TAG,"Found previously stored initial signal data in preferences ('$it'), initializing verifier")
+                        Log.d(Constants.LOG_TAG,"Found previously stored verifier key data in preferences ('$it')")
                         // ... then try to parse back into ByteArray representation
                         try {
-                            _initialSignalData.setValue(SignalUtils.hexStringToByteArray(it))
+                            _verifierKeyData.setValue(SignalUtils.hexStringToByteArray(it))
                         } catch (e: Exception) {
-                            Log.e(Constants.LOG_TAG,"Unable to parse initial signal data from preferences ('$it'): $e")
+                            Log.e(Constants.LOG_TAG,"Unable to parse verifier key data from preferences ('$it'): $e")
                         }
                     }
                 }
             }
-            return _initialSignalData
+            return _verifierKeyData
         }
-
-    /** If importFromScan is set to true, always cache in SharedPreferences as it has been freshly imported by the used. If false,
-     * only cache if not yet stored in SharedPreferences
+    /** If forceStore is set to true, always cache in SharedPreferences as it has been freshly imported by the used. If false,
+     * only cache if not yet stored in SharedPreferences.
      */
-    fun updateInitialSignalData(newData: ByteArray, importFromScan: Boolean) {
+    // TODO: remove forceStore parameter and always overwrite?
+    fun updateVerifierKeyData(newData: ByteArray, forceStore: Boolean) {
         // also cache in preferences - but only if not yet present (don't overwrite a previously scanned result)
-        Log.d(Constants.LOG_TAG, "Currently set initial signal data: '${sharedPreferences.getString(Constants.initialSignalDataPreference, "")}'")
-        if (sharedPreferences.getString(Constants.initialSignalDataPreference, "").isNullOrEmpty() || importFromScan) {
-            // writing the preferences will actually cause the local data in VerifyFragment to be set through the settings listener in MainActivity
+        Log.d(Constants.LOG_TAG, "Currently set verifier key data: '${sharedPreferences.getString(Constants.verifierEncKeyDataPreference, "")}'")
+        if (sharedPreferences.getString(Constants.verifierEncKeyDataPreference, "").isNullOrEmpty() || forceStore) {
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putString(Constants.initialSignalDataPreference, SignalUtils.byteArrayToHexString(newData))
+            editor.putString(Constants.verifierEncKeyDataPreference, SignalUtils.byteArrayToHexString(newData))
             editor.apply()
-            Log.d(Constants.LOG_TAG, "Synced prover signal data to preferences")
+            Log.d(Constants.LOG_TAG, "Synced verifier key data to preferences")
         }
         // and post updates to any observers of the getter
-        _initialSignalData.value = newData
+        _verifierKeyData.value = newData
     }
 
-    private val _lastSignalNumber = MutableLiveData<Int>()
-    val lastSignalNumber: LiveData<Int>
+    /** Internal storage for signal chain data as used by the verifier. */
+    private val _verifierChainData = MutableLiveData<ByteArray>()
+    /** This ByteArray represents signal chain data as used by the verifier.
+     * On reading, it will check SharedPreferences and initialize from there. */
+    val verifierChainData: LiveData<ByteArray>
         get() {
-            return _lastSignalNumber
+            // if not yet set, ...
+            if (_verifierChainData.value == null) {
+                // ... and we have a cached value set in SharedPreferences ...
+                sharedPreferences.getString(Constants.verifierChainDataPreference, "").also {
+                    if (! it.isNullOrEmpty()) {
+                        Log.d(Constants.LOG_TAG,"Found previously stored signal verification data in preferences ('$it')")
+                        // ... then try to parse back into ByteArray representation
+                        try {
+                            _verifierChainData.setValue(SignalUtils.hexStringToByteArray(it))
+                        } catch (e: Exception) {
+                            Log.e(Constants.LOG_TAG,"Unable to parse signal verification  data from preferences ('$it'): $e")
+                        }
+                    }
+                }
+            }
+            return _verifierChainData
         }
-    fun updateLastSignalNumber(i: Int) {
-        // post updates to any observers of the getter
-        _lastSignalNumber.value = i
+    /** If forceStore is set to true, always cache in SharedPreferences as it has been freshly imported by the used. If false,
+     * only cache if not yet stored in SharedPreferences.
+     */
+    // TODO: remove forceStore parameter and always overwrite?
+    fun updateVerifierChainData(newData: ByteArray, forceStore: Boolean) {
+        // also cache in preferences - but only if not yet present (don't overwrite a previously scanned result)
+        Log.d(Constants.LOG_TAG, "Currently set signal verification  data: '${sharedPreferences.getString(Constants.verifierChainDataPreference, "")}'")
+        if (sharedPreferences.getString(Constants.verifierChainDataPreference, "").isNullOrEmpty() || forceStore) {
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putString(Constants.verifierChainDataPreference, SignalUtils.byteArrayToHexString(newData))
+            editor.apply()
+            Log.d(Constants.LOG_TAG, "Synced signal verification data to preferences")
+        }
+        // and post updates to any observers of the getter
+        _verifierChainData.value = newData
     }
 
-    /** Returns a current snapshot of the internally stored data values for starting a protocol run. */
-    fun getProtocolRunData(): ProtocolRunData? =
+    private val _verifierMaxSkipSignals = MutableLiveData<Int>()
+    // TODO: make configurable through Preferences/Settings
+    val verifierMaxSkipSignals = 10
+
+    private val _proverlastSignalNumber = MutableLiveData<Int>()
+    val proverLastSignalNumber: LiveData<Int>
+        get() {
+            return _proverlastSignalNumber
+        }
+    fun updateProverLastSignalNumber(i: Int) {
+        // post updates to any observers of the getter
+        _proverlastSignalNumber.value = i
+    }
+
+    /** Returns a current snapshot of the internally stored data values for starting a prover protocol run. */
+    fun getProverProtocolRunData(): ProverProtocolRunData? =
         if (appPassword.value != null && signalPassword.value != null && server.value != null &&
             appPassword.value!!.isNotEmpty() && signalPassword.value!!.isNotEmpty() && server.value!!.isNotEmpty())
-            ProtocolRunData(signalPassword.value!!, appPassword.value!!, server.value!!,
-                initialSignalData.value, lastSignalNumber.value)
+            ProverProtocolRunData(signalPassword.value!!, appPassword.value!!, server.value!!,
+                proverLastSignalNumber.value)
+        else
+            null
+
+    /** Returns a current snapshot of the internally stored data values for starting an initial verifier protocol run. */
+    fun getInitialVerifierProtocolRunData(initialSignalData: ByteArray): VerifierInitialProtocolRunData? =
+        if (appPassword.value != null && signalPassword.value != null && server.value != null &&
+            appPassword.value!!.isNotEmpty() && signalPassword.value!!.isNotEmpty() && server.value!!.isNotEmpty())
+            VerifierInitialProtocolRunData(signalPassword.value!!, appPassword.value!!, server.value!!,
+                verifierMaxSkipSignals, initialSignalData)
+        else
+            null
+
+    /** Returns a current snapshot of the internally stored data values for starting an initial verifier protocol run. */
+    fun getNextVerifierProtocolRunData(): VerifierNextProtocolRunData? =
+        if (appPassword.value != null && signalPassword.value != null && server.value != null &&
+            verifierKeyData.value != null && verifierChainData.value != null &&
+            appPassword.value!!.isNotEmpty() && signalPassword.value!!.isNotEmpty() && server.value!!.isNotEmpty() &&
+            verifierKeyData.value!!.isNotEmpty() && verifierChainData.value!!.isNotEmpty())
+            VerifierNextProtocolRunData(signalPassword.value!!, appPassword.value!!, server.value!!,
+                verifierMaxSkipSignals, keyData = verifierKeyData.value!!, verificationData = verifierChainData.value!!)
         else
             null
 

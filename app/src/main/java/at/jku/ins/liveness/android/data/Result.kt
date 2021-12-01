@@ -16,3 +16,21 @@ sealed class Result<out T : Any> {
         }
     }
 }
+
+/** On Success, additional data is returned from protocols runs. */
+abstract class SuccessOutput(
+    open val text: String
+)
+
+data class ProverOutput(
+    override val text: String,
+    val nextSignalNumber: Int,
+    val initialSignalData: ByteArray
+): SuccessOutput(text)
+
+data class VerifierOutput(
+    override val text: String,
+    val nextSignalKeyData: ByteArray,
+    val nextSignalVerificationData: ByteArray
+): SuccessOutput(text)
+

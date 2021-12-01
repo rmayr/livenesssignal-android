@@ -23,16 +23,15 @@ open class ViewFragment(private val protocol: ProtocolRun) : Fragment() {
         }*/
     }
 
-    fun startAction() {
+    fun startAction(protocolData: ProtocolRunData?) {
         // at this point get a snapshot of protocol run data
-        val _data = data.getProtocolRunData()
-        if (_data == null) {
+        if (protocolData == null) {
             Log.e(Constants.LOG_TAG, "Can't continue: protocol run data not initialized")
             return
         }
 
         pageViewModel.setText("Starting request ...")
-        pageViewModel.runNetworkRequest(protocol, _data)
+        pageViewModel.runNetworkRequest(protocol, protocolData)
     }
 
     /*companion object {

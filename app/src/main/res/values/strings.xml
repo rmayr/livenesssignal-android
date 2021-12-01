@@ -21,7 +21,7 @@
     <!-- Preference Titles -->
     <string name="messages_header">Server settings</string>
     <string name="sync_header">Password settings</string>
-    <string name="signal_data_header">Initial signal data</string>
+    <string name="signal_data_header">Verifier cached data</string>
     <!-- Server Preferences -->
     <string name="server_title">Default server</string>
     <!-- Sync Preferences -->
@@ -31,8 +31,10 @@
     <string name="appPassword_biometricsLock_title">Lock app with biometrics</string>
     <string name="appPassword_biometricsLock_on">Unlock with on-device biometrics</string>
     <string name="appPassword_biometricsLock_off">Ask app password on every login</string>
-    <!-- Initial Signal Data Preferences -->
-    <string name="signal_data_title">Initial signal data for verification</string>
+    <!-- Verifier Key and Verification Chain Data Preferences -->
+    <string name="verifier_max_signals_skip">Max signals to skip</string>
+    <!--<string name="verifier_key_data_header">Encrypted key data for verification</string>-->
+    <!--<string name="verifier_signal_chain_header">Encrypted key data for verification</string>-->
 
 
     <!-- Main Preferences -->

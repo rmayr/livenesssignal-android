@@ -16,8 +16,9 @@ import jakarta.ws.rs.client.ClientBuilder
 import org.glassfish.jersey.client.ClientProperties
 import org.glassfish.jersey.client.ClientConfig
 
+/** This class implements the general network protocol to interact with a singal server. */
 interface ProtocolRun {
-    abstract suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String>
+    abstract suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<SuccessOutput>
 
     fun createClient(serverUrl: String): WebTarget {
         val config = ClientConfig()

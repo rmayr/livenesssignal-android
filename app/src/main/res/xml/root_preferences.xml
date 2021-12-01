@@ -29,11 +29,25 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/signal_data_header">
 
-        <EditTextPreference
-            android:key="initial_signal_data"
+        <!--<EditTextPreference
+            android:key="verifier_enc_key_data"
             android:selectAllOnFocus="true"
             android:singleLine="false"
-            android:title="@string/signal_data_title"
+            android:title="@string/verifier_key_data_header"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:key="verifier_chain_data"
+            android:selectAllOnFocus="true"
+            android:singleLine="false"
+            android:title="@string/verifier_signal_chain_header"
+            app:useSimpleSummaryProvider="true" />-->
+
+        <EditTextPreference
+            android:key="verifier_max_signals_skip"
+            android:selectAllOnFocus="true"
+            android:singleLine="false"
+            android:title="@string/verifier_max_signals_skip"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

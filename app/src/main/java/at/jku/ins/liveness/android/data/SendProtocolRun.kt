@@ -8,23 +8,28 @@ import at.jku.ins.liveness.signals.Prover
 import at.jku.ins.liveness.signals.SignalUtils
 import at.jku.ins.liveness.signals.data.ProverData
 
-// TODO: this is suboptimal, but a quick hack to allow the protocol to update state data
-class SendProtocolRun(private val writableData: ProtocolRunDataRepository) : ProtocolRun {
+class SendProtocolRun() : ProtocolRun {
     private val cryptographyManager = CryptographyManager()
 
-    override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<String> {
+    override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<ProverOutput> {
         val livenessTarget = createClient(data.serverUrl)
 
         val lastSignalNumber: Int
-        if (data.lastSignalNumber == null) {
-            lastSignalNumber = 0
-            viewModel.addLine("Last signal number not set so far, initializing with $lastSignalNumber")
+        if (data is ProverProtocolRunData) {
+            if (data.lastSignalNumber == null) {
+                lastSignalNumber = 0
+                viewModel.addLine("Last signal number not set so far, initializing with $lastSignalNumber")
+            }
+            else {
+                lastSignalNumber = data.lastSignalNumber
+            }
         }
         else {
-            lastSignalNumber = data.lastSignalNumber
+            lastSignalNumber = 0
+            viewModel.addLine("WARNING: SendProtocolRun called without ProverProtocolRunData. Setting lastSignalNumber=$lastSignalNumber and continuing, but this should not happen.")
         }
 
-        // TODO: this tries to create an authenticated key, which is wrong for that case
+        // the IV is created on first call and then stored in keystore (unauthenticated)
         val iv = cryptographyManager.getStaticIv()
         val proverData = ProverData(
             data.signalPassword,
@@ -34,9 +39,6 @@ class SendProtocolRun(private val writableData: ProtocolRunDataRepository) : Pro
             lastSignalNumber)
         val prover = Prover(ConfigConstants.ALGORITHM, proverData)
 
-        // update the initial signal data in our repository - the SendFragment is an observer on this variable and will update the QRcode
-        writableData.updateInitialSignalData(prover.initialSignalData, false)
-
         viewModel.addLine("Initialized prover with serverUrl=${data.serverUrl}, signalPassword=${data.signalPassword}, appPassword=${data.appPassword}, lastSignalNumber=$lastSignalNumber")
         viewModel.addLine("Resulting initial signal data: ${SignalUtils.byteArrayToHexString(prover.initialSignalData)}")
 
@@ -45,16 +47,16 @@ class SendProtocolRun(private val writableData: ProtocolRunDataRepository) : Pro
 
             val signal = prover.nextSignal
             val signalNumber = prover.data.nextSignalNumber
-            writableData.updateLastSignalNumber(signalNumber)
 
             val resultData = submitMessage(livenessTarget, TYPE.STORE, signal, solution, cookies)
             val retrievedSignal: String = resultData.retrieveDataString()
 
-            // Get the data we submitted for storage
-            /*println("Using key: " + signal.retrieveKeyString())
-            println("Submitted: " + SignalUtils.byteArrayToHexString(signal.signalData))*/
-
-            return Result.Success("The signal number $signalNumber is: $retrievedSignal")
+            return Result.Success(
+                ProverOutput(
+                "The signal number $signalNumber is: $retrievedSignal",
+                nextSignalNumber = signalNumber,
+                initialSignalData = prover.initialSignalData
+            ))
         }
         catch (e: Exception) {
             return Result.Error(e)
