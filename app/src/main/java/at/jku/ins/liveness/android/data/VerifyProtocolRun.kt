@@ -4,6 +4,7 @@ import at.jku.ins.liveness.ConfigConstants
 import at.jku.ins.liveness.android.ui.main.PageViewModel
 import at.jku.ins.liveness.protocol.RequestMessage.TYPE
 import at.jku.ins.liveness.signals.Signal
+import at.jku.ins.liveness.signals.SignalUtils
 import at.jku.ins.liveness.signals.Verifier
 import at.jku.ins.liveness.signals.data.VerifierData
 import kotlin.random.Random
@@ -17,6 +18,7 @@ class VerifyProtocolRun : ProtocolRun {
         val maxSkipSignals: Int
         when(data) {
             is VerifierInitialProtocolRunData -> {
+                viewModel.addLine("Initializing new Verifier with blank state from initial signal data ${SignalUtils.byteArrayToHexString(data.initialSignalData)}")
                 verifierData = VerifierData(
                     data.signalPassword,
                     data.appPassword,
@@ -41,28 +43,36 @@ class VerifyProtocolRun : ProtocolRun {
             verifierData
         )
 
+        viewModel.addLine("Trying to verify signal with shared password 0x${SignalUtils.byteArrayToHexString(verifierData.sharedPassword)}, " +
+                "verifier app password 0x${SignalUtils.byteArrayToHexString(verifierData.verifierPassword)}, " +
+                "key chain data 0x${SignalUtils.byteArrayToHexString(verifierData.keyData)}, " +
+                "verification signal chain data 0x${SignalUtils.byteArrayToHexString(verifierData.verificationData)}," +
+                " skipping at max $maxSkipSignals signals")
+
         try {
             // now we loop up to the maximum number of signals we are willing to skip
             for (skip in 0..maxSkipSignals) {
                 val (solution, cookies) = computeProofOfWork(livenessTarget)
 
                 // for each skip, try to fetch this signal with the respective next key
-                val data = ByteArray(ConfigConstants.SIGNAL_LENGTH)
+                val signalData = ByteArray(ConfigConstants.SIGNAL_LENGTH)
                 // fill the data part of the signal with random bytes, as we are querying, not submitting
-                Random.Default.nextBytes(data)
-                val signal = Signal(verifier.getNextKey(skip), data)
+                Random.Default.nextBytes(signalData)
+                val signal = Signal(verifier.getNextKey(skip), signalData)
+                viewModel.addLine("Trying with skip $skip at key 0x${SignalUtils.byteArrayToHexString(signal.key)}")
                 val resultData = submitMessage(livenessTarget, TYPE.RETRIEVE, signal, solution, cookies)
                 val retrievedSignal: String = resultData.retrieveDataString()
 
                 // and try to verify
                 val skippedSignals = verifier.verifyWithSkip(resultData.data, skip)
+                viewModel.addLine("Retrieved signal 0x$retrievedSignal, verification result=$skippedSignals")
 
                 // if success, done, if not, try again until maxSkipSignal
                 if (skippedSignals == skip)
                     return Result.Success(VerifierOutput(
                         "Correctly verified signal (skipped $skippedSignals that were not found)",
-                        nextSignalKeyData = verifier.data.getKeyDataEnc(),
-                        nextSignalVerificationData = verifier.data.getVerificationData()
+                        nextSignalKeyData = verifier.data.keyDataEnc,
+                        nextSignalVerificationData = verifier.data.verificationData
                     ))
             }
             // if we get to here, we were not able to find a signal that verified --> fail

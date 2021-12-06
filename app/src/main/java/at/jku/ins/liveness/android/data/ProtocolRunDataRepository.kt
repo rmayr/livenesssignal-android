@@ -183,12 +183,30 @@ class ProtocolRunDataRepository private constructor(context: Context) {
     val verifierMaxSkipSignals = 10
 
     private val _proverlastSignalNumber = MutableLiveData<Int>()
+    // TODO: for better forensics plausible deniability, don't store but derive from common datetime object shared by prover and verifier
     val proverLastSignalNumber: LiveData<Int>
         get() {
+            if (_proverlastSignalNumber.value == null) {
+                Log.d(Constants.LOG_TAG, "proverlastSignalNumber is empty while trying to get from ProtocolRunDataRepository, trying to read from preferences")
+                if (sharedPreferences.contains(Constants.proverNextSignalPreference)) {
+                    sharedPreferences.getInt(Constants.proverNextSignalPreference, -1).also {
+                        Log.d(
+                            Constants.LOG_TAG,
+                            "Found stored $Constants.proverNextSignalPreference preference: $it"
+                        )
+                        _proverlastSignalNumber.value = it
+                    }
+                }
+            }
             return _proverlastSignalNumber
         }
     fun updateProverLastSignalNumber(i: Int) {
-        // post updates to any observers of the getter
+        Log.d(Constants.LOG_TAG, "Updating proverlastSignalNumber to: $i")
+        // update preferences
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putInt(Constants.proverNextSignalPreference, i)
+        editor.apply()
+        // and post updates to any observers of the getter
         _proverlastSignalNumber.value = i
     }
 

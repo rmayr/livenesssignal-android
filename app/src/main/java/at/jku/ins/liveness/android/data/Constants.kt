@@ -3,6 +3,7 @@ package at.jku.ins.liveness.android.data
 class Constants {
     companion object {
         public const val serverPreference = "server"
+        public const val proverNextSignalPreference = "prover_next_signal"
         public const val verifierEncKeyDataPreference = "verifier_enc_key_data"
         public const val verifierChainDataPreference = "verifier_chain_data"
         public const val verifierMaxSignalsSkipPreference = "verifier_max_signals_skip"

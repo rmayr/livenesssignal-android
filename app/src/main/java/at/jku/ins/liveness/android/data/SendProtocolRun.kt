@@ -1,16 +1,13 @@
 package at.jku.ins.liveness.android.data
 
 import at.jku.ins.liveness.ConfigConstants
-import at.jku.ins.liveness.android.ui.login.CryptographyManager
 import at.jku.ins.liveness.android.ui.main.PageViewModel
 import at.jku.ins.liveness.protocol.RequestMessage.TYPE
 import at.jku.ins.liveness.signals.Prover
 import at.jku.ins.liveness.signals.SignalUtils
 import at.jku.ins.liveness.signals.data.ProverData
 
-class SendProtocolRun() : ProtocolRun {
-    private val cryptographyManager = CryptographyManager()
-
+class SendProtocolRun : ProtocolRun {
     override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<ProverOutput> {
         val livenessTarget = createClient(data.serverUrl)
 
@@ -42,7 +39,11 @@ class SendProtocolRun() : ProtocolRun {
             lastSignalNumber)
         val prover = Prover(ConfigConstants.ALGORITHM, proverData)
 
-        viewModel.addLine("Initialized prover with serverUrl=${data.serverUrl}, signalPassword=${data.signalPassword}, appPassword=${data.appPassword}, lastSignalNumber=$lastSignalNumber")
+        viewModel.addLine("Initialized prover with serverUrl=${data.serverUrl}, " +
+                "signalPassword=0x${SignalUtils.byteArrayToHexString(proverData.sharedPassword)}, " +
+                "appPassword=0x${SignalUtils.byteArrayToHexString(proverData.prooferPassword)}, " +
+                "iv=0x${SignalUtils.byteArrayToHexString(proverData.iv)}, " +
+                "nextSignalNumber=${proverData.nextSignalNumber}")
         viewModel.addLine("Resulting initial signal data: ${SignalUtils.byteArrayToHexString(prover.initialSignalData)}")
 
         try {
@@ -56,7 +57,7 @@ class SendProtocolRun() : ProtocolRun {
 
             return Result.Success(
                 ProverOutput(
-                "The signal number $signalNumber is: $retrievedSignal",
+                "The signal number $signalNumber is: 0x$retrievedSignal at key 0x${SignalUtils.byteArrayToHexString(signal.key)}",
                 nextSignalNumber = signalNumber,
                 initialSignalData = prover.initialSignalData
             ))
