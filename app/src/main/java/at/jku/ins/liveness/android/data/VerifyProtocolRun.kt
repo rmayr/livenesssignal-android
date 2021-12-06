@@ -42,10 +42,10 @@ class VerifyProtocolRun : ProtocolRun {
         )
 
         try {
-            val (solution, cookies) = computeProofOfWork(livenessTarget)
-
             // now we loop up to the maximum number of signals we are willing to skip
             for (skip in 0..maxSkipSignals) {
+                val (solution, cookies) = computeProofOfWork(livenessTarget)
+
                 // for each skip, try to fetch this signal with the respective next key
                 val data = ByteArray(ConfigConstants.SIGNAL_LENGTH)
                 // fill the data part of the signal with random bytes, as we are querying, not submitting

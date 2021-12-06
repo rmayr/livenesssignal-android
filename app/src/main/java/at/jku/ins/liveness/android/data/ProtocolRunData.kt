@@ -17,6 +17,7 @@ data class ProverProtocolRunData(
     override val signalPassword: String,
     override val appPassword: String,
     override val serverUrl: String,
+    val iv: ByteArray,
     val lastSignalNumber: Int?
 ) : ProtocolRunData(signalPassword, appPassword, serverUrl)
 

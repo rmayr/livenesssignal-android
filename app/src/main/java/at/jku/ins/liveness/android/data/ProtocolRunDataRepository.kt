@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
+import at.jku.ins.liveness.android.ui.login.CryptographyManager
 import at.jku.ins.liveness.signals.SignalUtils
 
 // heavily inspired by https://github.com/googlecodelabs/android-datastore/blob/master/app/src/main/java/com/codelab/android/datastore/data/UserPreferencesRepository.kt
@@ -16,6 +17,7 @@ import at.jku.ins.liveness.signals.SignalUtils
  */
 class ProtocolRunDataRepository private constructor(context: Context) {
     private var sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private var context = context
 
     init {
         // listen for changes in shared preferences and update our protocol run data when necessary
@@ -195,6 +197,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
         if (appPassword.value != null && signalPassword.value != null && server.value != null &&
             appPassword.value!!.isNotEmpty() && signalPassword.value!!.isNotEmpty() && server.value!!.isNotEmpty())
             ProverProtocolRunData(signalPassword.value!!, appPassword.value!!, server.value!!,
+                CryptographyManager().getStaticIv(context),
                 proverLastSignalNumber.value)
         else
             null

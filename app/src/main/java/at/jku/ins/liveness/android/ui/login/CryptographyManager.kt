@@ -12,6 +12,7 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
+import kotlin.random.Random
 
 /** Handles encryption and decryption
  * Taken directly from https://developer.android.com/codelabs/biometric-login
@@ -36,7 +37,7 @@ interface CryptographyManager {
      * On first call, creates a random secret key that is interpreted as IV. On all calls (first
      * and subsequent), returns that same IV.
      */
-    fun getStaticIv(): ByteArray
+    fun getStaticIv(context: Context): ByteArray
 
     fun persistCiphertextWrapperToSharedPrefs(
         ciphertextWrapper: CiphertextWrapper,
@@ -101,7 +102,7 @@ private class CryptographyManagerImpl : CryptographyManager {
     }
 
     private fun getOrCreateSecretKey(keyName: String, requireUserAuth: Boolean): SecretKey {
-        // If Secretkey was previously created for that keyName, then grab and return it.
+        // If SecretKey was previously created for that keyName, then grab and return it.
         val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE)
         keyStore.load(null) // Keystore must be loaded before it can be accessed
         keyStore.getKey(keyName, null)?.let { return it as SecretKey }
@@ -127,12 +128,29 @@ private class CryptographyManagerImpl : CryptographyManager {
         return keyGenerator.generateKey()
     }
 
-    override fun getStaticIv(): ByteArray {
-        val iv = getOrCreateSecretKey(Constants.IV_KEY_NAME, false)
-        if (iv.encoded == null)
-            throw KeyException("Unable to create or retrieve IV key with name '$Constants.IV_KEY_NAME' from Android keystore")
-        else
-            return iv.encoded
+    override fun getStaticIv(context: Context): ByteArray {
+        val cipher = getCipher()
+        val secretKey = getOrCreateSecretKey(Constants.IV_KEY_NAME, false)
+
+        // do we have a stored, encrypted IV yet?
+        val iv: ByteArray
+        if (context.getSharedPreferences(Constants.PROTOCOL_PREFERENCES, Context.MODE_PRIVATE).contains(Constants.CIPHERTEXT_WRAPPER)) {
+            val wrapper = getCiphertextWrapperFromSharedPrefs(context,
+                Constants.PROTOCOL_PREFERENCES, Context.MODE_PRIVATE, Constants.CIPHERTEXT_WRAPPER)
+                ?: throw KeyException("Unable to get preference wrapper '${Constants.CIPHERTEXT_WRAPPER} from preference file ${Constants.PROTOCOL_PREFERENCES}")
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(128, wrapper.initializationVector))
+            iv = cipher.doFinal(wrapper.ciphertext)
+        }
+        else {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+            iv = ByteArray(KEY_SIZE/8)
+            Random.Default.nextBytes(iv)
+            val encIv = cipher.doFinal(iv)
+            persistCiphertextWrapperToSharedPrefs(CiphertextWrapper(encIv, cipher.iv), context,
+                Constants.PROTOCOL_PREFERENCES, Context.MODE_PRIVATE, Constants.CIPHERTEXT_WRAPPER)
+        }
+
+        return iv
     }
 
     override fun persistCiphertextWrapperToSharedPrefs(
@@ -158,4 +176,22 @@ private class CryptographyManagerImpl : CryptographyManager {
 }
 
 
-data class CiphertextWrapper(val ciphertext: ByteArray, val initializationVector: ByteArray)
+data class CiphertextWrapper(val ciphertext: ByteArray, val initializationVector: ByteArray) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CiphertextWrapper
+
+        if (!ciphertext.contentEquals(other.ciphertext)) return false
+        if (!initializationVector.contentEquals(other.initializationVector)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = ciphertext.contentHashCode()
+        result = 31 * result + initializationVector.contentHashCode()
+        return result
+    }
+}

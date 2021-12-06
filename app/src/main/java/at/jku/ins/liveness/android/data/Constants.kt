@@ -15,6 +15,7 @@ class Constants {
         public const val LOG_TAG = "LivenessSignal"
 
         public const val BIOMETRIC_PREFERENCES = "biometric_preferences"
+        public const val PROTOCOL_PREFERENCES = "protocol_preferences"
         public const val CIPHERTEXT_WRAPPER = "ciphertext_wrapper"
 
         public const val IV_KEY_NAME = "static_iv"

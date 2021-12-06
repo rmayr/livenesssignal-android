@@ -1,10 +1,7 @@
 package at.jku.ins.liveness.android.ui.main
 
 import androidx.lifecycle.*
-import at.jku.ins.liveness.android.data.ProtocolRun
-import at.jku.ins.liveness.android.data.ProtocolRunData
-import at.jku.ins.liveness.android.data.Result
-import at.jku.ins.liveness.android.data.SuccessOutput
+import at.jku.ins.liveness.android.data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

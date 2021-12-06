@@ -15,6 +15,7 @@ class SendProtocolRun() : ProtocolRun {
         val livenessTarget = createClient(data.serverUrl)
 
         val lastSignalNumber: Int
+        val iv: ByteArray
         if (data is ProverProtocolRunData) {
             if (data.lastSignalNumber == null) {
                 lastSignalNumber = 0
@@ -23,14 +24,16 @@ class SendProtocolRun() : ProtocolRun {
             else {
                 lastSignalNumber = data.lastSignalNumber
             }
+            iv = data.iv
         }
         else {
             lastSignalNumber = 0
             viewModel.addLine("WARNING: SendProtocolRun called without ProverProtocolRunData. Setting lastSignalNumber=$lastSignalNumber and continuing, but this should not happen.")
+            // this is a bad hack and really shouldn't happen - in this case the IV is set to 0 as a NOP
+            iv = ByteArray(32)
         }
 
         // the IV is created on first call and then stored in keystore (unauthenticated)
-        val iv = cryptographyManager.getStaticIv()
         val proverData = ProverData(
             data.signalPassword,
             data.appPassword,
