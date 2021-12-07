@@ -1,6 +1,5 @@
 package at.jku.ins.liveness.android.ui.main
 
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -12,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.data.*
 import at.jku.ins.liveness.android.databinding.FragmentSendBinding
 import at.jku.ins.liveness.signals.SignalUtils
@@ -89,7 +87,7 @@ class SendFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
         val sendBtn = binding.buttonSend
         sendBtn.setOnClickListener {
             Log.d(Constants.LOG_TAG, "Starting send action")
-            startAction(data.getProverProtocolRunData())
+            startAction(context?.let { it1 -> data.getProverProtocolRunData(it1) })
         }
 
         return root

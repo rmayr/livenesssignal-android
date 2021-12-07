@@ -32,12 +32,13 @@ class SendProtocolRun : ProtocolRun {
 
         // the IV is created on first call and then stored in keystore (unauthenticated)
         val proverData = ProverData(
+            ConfigConstants.ALGORITHM,
             data.signalPassword,
             data.appPassword,
             Constants.signalCount,
             iv,
             lastSignalNumber)
-        val prover = Prover(ConfigConstants.ALGORITHM, proverData)
+        val prover = Prover(proverData)
 
         viewModel.addLine("Initialized prover with serverUrl=${data.serverUrl}, " +
                 "signalPassword=0x${SignalUtils.byteArrayToHexString(proverData.sharedPassword)}, " +

@@ -17,7 +17,6 @@ import at.jku.ins.liveness.signals.SignalUtils
  */
 class ProtocolRunDataRepository private constructor(context: Context) {
     private var sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private var context = context
 
     init {
         // listen for changes in shared preferences and update our protocol run data when necessary
@@ -182,11 +181,11 @@ class ProtocolRunDataRepository private constructor(context: Context) {
     // TODO: make configurable through Preferences/Settings
     val verifierMaxSkipSignals = 10
 
-    private val _proverlastSignalNumber = MutableLiveData<Int>()
+    private val _proverLastSignalNumber = MutableLiveData<Int>()
     // TODO: for better forensics plausible deniability, don't store but derive from common datetime object shared by prover and verifier
     val proverLastSignalNumber: LiveData<Int>
         get() {
-            if (_proverlastSignalNumber.value == null) {
+            if (_proverLastSignalNumber.value == null) {
                 Log.d(Constants.LOG_TAG, "proverlastSignalNumber is empty while trying to get from ProtocolRunDataRepository, trying to read from preferences")
                 if (sharedPreferences.contains(Constants.proverNextSignalPreference)) {
                     sharedPreferences.getInt(Constants.proverNextSignalPreference, -1).also {
@@ -194,11 +193,11 @@ class ProtocolRunDataRepository private constructor(context: Context) {
                             Constants.LOG_TAG,
                             "Found stored $Constants.proverNextSignalPreference preference: $it"
                         )
-                        _proverlastSignalNumber.value = it
+                        _proverLastSignalNumber.value = it
                     }
                 }
             }
-            return _proverlastSignalNumber
+            return _proverLastSignalNumber
         }
     fun updateProverLastSignalNumber(i: Int) {
         Log.d(Constants.LOG_TAG, "Updating proverlastSignalNumber to: $i")
@@ -207,11 +206,11 @@ class ProtocolRunDataRepository private constructor(context: Context) {
         editor.putInt(Constants.proverNextSignalPreference, i)
         editor.apply()
         // and post updates to any observers of the getter
-        _proverlastSignalNumber.value = i
+        _proverLastSignalNumber.value = i
     }
 
     /** Returns a current snapshot of the internally stored data values for starting a prover protocol run. */
-    fun getProverProtocolRunData(): ProverProtocolRunData? =
+    fun getProverProtocolRunData(context: Context): ProverProtocolRunData? =
         if (appPassword.value != null && signalPassword.value != null && server.value != null &&
             appPassword.value!!.isNotEmpty() && signalPassword.value!!.isNotEmpty() && server.value!!.isNotEmpty())
             ProverProtocolRunData(signalPassword.value!!, appPassword.value!!, server.value!!,

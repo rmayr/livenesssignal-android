@@ -20,6 +20,7 @@ class VerifyProtocolRun : ProtocolRun {
             is VerifierInitialProtocolRunData -> {
                 viewModel.addLine("Initializing new Verifier with blank state from initial signal data ${SignalUtils.byteArrayToHexString(data.initialSignalData)}")
                 verifierData = VerifierData(
+                    ConfigConstants.ALGORITHM,
                     data.signalPassword,
                     data.appPassword,
                     data.initialSignalData)
@@ -27,6 +28,7 @@ class VerifyProtocolRun : ProtocolRun {
             }
             is VerifierNextProtocolRunData -> {
                 verifierData = VerifierData(
+                    ConfigConstants.ALGORITHM,
                     data.signalPassword,
                     data.appPassword,
                     data.verificationData,
@@ -38,10 +40,7 @@ class VerifyProtocolRun : ProtocolRun {
                 return Result.Error(Exception("No initial signal data set, please import from prover"))
             }
         }
-        val verifier = Verifier(
-            ConfigConstants.ALGORITHM,
-            verifierData
-        )
+        val verifier = Verifier(verifierData)
 
         viewModel.addLine("Trying to verify signal with shared password 0x${SignalUtils.byteArrayToHexString(verifierData.sharedPassword)}, " +
                 "verifier app password 0x${SignalUtils.byteArrayToHexString(verifierData.verifierPassword)}, " +
