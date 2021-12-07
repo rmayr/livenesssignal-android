@@ -11,21 +11,21 @@ class SendProtocolRun : ProtocolRun {
     override suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<ProverOutput> {
         val livenessTarget = createClient(data.serverUrl)
 
-        val lastSignalNumber: Int
+        val nextSignalNumber: Int
         val iv: ByteArray
         if (data is ProverProtocolRunData) {
-            if (data.lastSignalNumber == null) {
-                lastSignalNumber = 1
-                viewModel.addLine("Last signal number not set so far, initializing with $lastSignalNumber")
+            if (data.nextSignalNumber == null) {
+                nextSignalNumber = 1
+                viewModel.addLine("Next signal number not set so far, initializing with $nextSignalNumber")
             }
             else {
-                lastSignalNumber = data.lastSignalNumber
+                nextSignalNumber = data.nextSignalNumber
             }
             iv = data.iv
         }
         else {
-            lastSignalNumber = 1
-            viewModel.addLine("WARNING: SendProtocolRun called without ProverProtocolRunData. Setting lastSignalNumber=$lastSignalNumber and continuing, but this should not happen.")
+            nextSignalNumber = 1
+            viewModel.addLine("WARNING: SendProtocolRun called without ProverProtocolRunData. Setting nextSignalNumber=$nextSignalNumber and continuing, but this should not happen.")
             // this is a bad hack and really shouldn't happen - in this case the IV is set to 0 as a NOP
             iv = ByteArray(32)
         }
@@ -37,7 +37,7 @@ class SendProtocolRun : ProtocolRun {
             data.appPassword,
             Constants.signalCount,
             iv,
-            lastSignalNumber)
+            nextSignalNumber)
         val prover = Prover(proverData)
 
         viewModel.addLine("Initialized prover with serverUrl=${data.serverUrl}, " +
@@ -51,7 +51,7 @@ class SendProtocolRun : ProtocolRun {
             val (solution, cookies) = computeProofOfWork(livenessTarget)
 
             val signal = prover.nextSignal
-            val signalNumber = prover.data.nextSignalNumber
+            val signalNumber = prover.data.nextSignalNumber-1
 
             val resultData = submitMessage(livenessTarget, TYPE.STORE, signal, solution, cookies)
             val retrievedSignal: String = resultData.retrieveDataString()
