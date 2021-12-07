@@ -10,15 +10,15 @@ abstract class ProtocolRunData(
     open val serverUrl: String
 )
 
-/** Represents the necessary input data for a prover protocol run. If lastSignalNumber is null,
- * it is initialized with 0.
+/** Represents the necessary input data for a prover protocol run. If nextSignalNumber is null,
+ * it is initialized with 1.
  */
 data class ProverProtocolRunData(
     override val signalPassword: String,
     override val appPassword: String,
     override val serverUrl: String,
     val iv: ByteArray,
-    val lastSignalNumber: Int?
+    val nextSignalNumber: Int?
 ) : ProtocolRunData(signalPassword, appPassword, serverUrl)
 
 /** Represents the necessary input data for the first verifier protocol run. Resulting encrypted key

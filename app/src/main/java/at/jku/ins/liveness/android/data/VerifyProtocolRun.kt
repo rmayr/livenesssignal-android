@@ -47,6 +47,7 @@ class VerifyProtocolRun : ProtocolRun {
                 "key chain data 0x${SignalUtils.byteArrayToHexString(verifierData.keyData)}, " +
                 "verification signal chain data 0x${SignalUtils.byteArrayToHexString(verifierData.verificationData)}," +
                 " skipping at max $maxSkipSignals signals")
+        viewModel.addLine("First key 0x${SignalUtils.byteArrayToHexString(verifier.getNextKey(0))}")
 
         try {
             // now we loop up to the maximum number of signals we are willing to skip
