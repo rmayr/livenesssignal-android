@@ -15,7 +15,7 @@ class SendProtocolRun : ProtocolRun {
         val iv: ByteArray
         if (data is ProverProtocolRunData) {
             if (data.lastSignalNumber == null) {
-                lastSignalNumber = 0
+                lastSignalNumber = 1
                 viewModel.addLine("Last signal number not set so far, initializing with $lastSignalNumber")
             }
             else {
@@ -24,7 +24,7 @@ class SendProtocolRun : ProtocolRun {
             iv = data.iv
         }
         else {
-            lastSignalNumber = 0
+            lastSignalNumber = 1
             viewModel.addLine("WARNING: SendProtocolRun called without ProverProtocolRunData. Setting lastSignalNumber=$lastSignalNumber and continuing, but this should not happen.")
             // this is a bad hack and really shouldn't happen - in this case the IV is set to 0 as a NOP
             iv = ByteArray(32)
