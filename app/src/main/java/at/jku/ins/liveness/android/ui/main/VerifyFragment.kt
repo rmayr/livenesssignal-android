@@ -1,7 +1,6 @@
 package at.jku.ins.liveness.android.ui.main
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.preference.PreferenceManager
 import at.jku.ins.liveness.android.data.*
 import at.jku.ins.liveness.android.databinding.FragmentVerifyBinding
 import at.jku.ins.liveness.signals.SignalUtils
@@ -23,6 +21,8 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+
+    private var protocolData: ProtocolRunData? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +38,6 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
 
         // enable verify button when we either have initial signal data (synced from prover or scanned from camera)
         val verifyBtn = binding.buttonVerify
-        var protocolData: ProtocolRunData? = null
         pageViewModel.initialSignalData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 verifyBtn.isEnabled = true
@@ -49,7 +48,7 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
         /* Note: this is a bit trickier because we need to try and read once to see if has been
          * cached in preferences and then we also register for changes.
          */
-        if (data.verifierKeyData.value != null && data.verifierChainData != null) {
+        if (data.verifierKeyData.value != null && data.verifierChainData.value != null) {
             verifyBtn.isEnabled = true
             protocolData = data.getNextVerifierProtocolRunData()
         }
@@ -95,6 +94,9 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
                 // store the key and verification data
                 data.updateVerifierKeyData(it.nextSignalKeyData, true)
                 data.updateVerifierChainData(it.nextSignalVerificationData, true)
+
+                // and prepare for the subsequent run
+                protocolData = data.getNextVerifierProtocolRunData()
             }
         })
 
