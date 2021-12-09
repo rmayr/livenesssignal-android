@@ -50,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
             // if we have biometrics available, allow to set the preference item
             context?.let {
                 val canAuthenticate = (BiometricManager.from(it).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS)
-                findPreference<SwitchPreferenceCompat>(Constants.biometricPreference)?.setEnabled(canAuthenticate);
+                findPreference<SwitchPreferenceCompat>(Constants.biometricPreference)?.setEnabled(canAuthenticate)
             }
         }
     }
