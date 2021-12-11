@@ -59,13 +59,13 @@ class VerifyProtocolRun : ProtocolRun {
                 // fill the data part of the signal with random bytes, as we are querying, not submitting
                 Random.Default.nextBytes(signalData)
                 val signal = Signal(verifier.getNextKey(skip), signalData)
-                viewModel.addLine("Trying with skip $skip at key 0x${SignalUtils.byteArrayToHexString(signal.key)}")
+                //viewModel.addLine("Trying with skip $skip at key 0x${SignalUtils.byteArrayToHexString(signal.key)}")
                 val resultData = submitMessage(livenessTarget, TYPE.RETRIEVE, signal, solution, cookies)
                 val retrievedSignal: String = resultData.retrieveDataString()
 
                 // and try to verify
                 val skippedSignals = verifier.verifyWithSkip(resultData.data, skip)
-                viewModel.addLine("Retrieved signal 0x$retrievedSignal, verification result=$skippedSignals")
+                //viewModel.addLine("Retrieved signal 0x$retrievedSignal, verification result=$skippedSignals")
 
                 // if success, done, if not, try again until maxSkipSignal
                 if (skippedSignals == skip)
