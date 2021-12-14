@@ -22,6 +22,7 @@ class SendProtocolRun : ProtocolRun {
                 nextSignalNumber = data.nextSignalNumber
             }
             iv = data.iv
+//            iv = ByteArray(32)    // For deterministic testing only
         }
         else {
             nextSignalNumber = 1
@@ -53,13 +54,14 @@ class SendProtocolRun : ProtocolRun {
             val signal = prover.nextSignal
             val signalNumber = prover.data.nextSignalNumber
 
-            val resultData = submitMessage(livenessTarget, TYPE.STORE, signal, solution, cookies)
-            val retrievedSignal: String = resultData.retrieveDataString()
+            submitMessage(livenessTarget, TYPE.STORE, signal, solution, cookies)
+//            val resultData = submitMessage(livenessTarget, TYPE.STORE, signal, solution, cookies)
+//            val retrievedSignal: String = resultData.retrieveDataString()
 
             return Result.Success(
                 ProverOutput(
-                "The signal number $signalNumber is: 0x$retrievedSignal at key 0x${SignalUtils.byteArrayToHexString(signal.key)}",
-                nextSignalNumber = signalNumber,
+                "The signal number $signalNumber is: 0x${SignalUtils.byteArrayToHexString(signal.signalData)} at key 0x${SignalUtils.byteArrayToHexString(signal.key)}",
+                nextSignalNumber = signalNumber+1,
                 initialSignalData = prover.initialSignalData
             ))
         }
