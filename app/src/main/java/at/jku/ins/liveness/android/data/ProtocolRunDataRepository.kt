@@ -24,7 +24,7 @@ class ProtocolRunDataRepository private constructor(context: Context) {
             Log.d(Constants.LOG_TAG, "Preferences changed: '$key'")
 
             if (key.equals(Constants.serverPreference))
-                _server.value = sharedPreferences.getString(Constants.serverPreference, "").orEmpty()
+                _server.value = prefs.getString(Constants.serverPreference, "").orEmpty()
 
             /*if (key.equals(Constants.initialSignalDataPreference)) {
                 val signalDataPrefs = prefs.getString(Constants.initialSignalDataPreference, "")

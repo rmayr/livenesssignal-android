@@ -52,11 +52,9 @@ class SendProtocolRun : ProtocolRun {
             val (solution, cookies) = computeProofOfWork(livenessTarget)
 
             val signal = prover.nextSignal
-            val signalNumber = prover.data.nextSignalNumber
+            val signalNumber = prover.data.nextSignalNumber-1
 
             submitMessage(livenessTarget, TYPE.STORE, signal, solution, cookies)
-//            val resultData = submitMessage(livenessTarget, TYPE.STORE, signal, solution, cookies)
-//            val retrievedSignal: String = resultData.retrieveDataString()
 
             return Result.Success(
                 ProverOutput(
