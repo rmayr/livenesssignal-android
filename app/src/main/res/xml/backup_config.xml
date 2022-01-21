@@ -1,0 +1,10 @@
+<data-extraction-rules>
+    <cloud-backup disableIfNoEncryptionCapabilities="true">
+        <!-- use default include rules for now -->
+        <!-- <include domain="sharedpref" path="."/> -->
+    </cloud-backup>
+
+    <device-transfer>
+        <!-- <include domain="sharedpref" path="."/> -->
+    </device-transfer>
+</data-extraction-rules>
