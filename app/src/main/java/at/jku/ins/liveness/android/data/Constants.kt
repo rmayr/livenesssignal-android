@@ -21,5 +21,7 @@ class Constants {
         const val CIPHERTEXT_WRAPPER = "ciphertext_wrapper"
 
         const val IV_KEY_NAME = "static_iv"
+
+        const val defaultServer = "http://fng5mhuck2n7l4we2egjnbp6l4cofw46wjyvi7t6s37uhwbcanmylyqd.onion/liveness"
     }
 }

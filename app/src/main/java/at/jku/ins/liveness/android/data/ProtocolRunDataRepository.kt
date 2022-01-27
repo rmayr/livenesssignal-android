@@ -43,17 +43,23 @@ class ProtocolRunDataRepository private constructor(context: Context) {
     /** Internal storage for server URL. */
     private val _server = MutableLiveData<String>()
     /** This String represents the server URL to interact with. On reading, it will check
-     * SharedPreferences and initialize from there. */
+     * SharedPreferences and initialize from there or set the hard-coded default value. */
     val server: LiveData<String>
         get() {
             if (_server.value.isNullOrEmpty()) {
                 Log.d(Constants.LOG_TAG, "serverUrl is empty while trying to get from ProtocolRunDataRepository, trying to read from preferences")
-                sharedPreferences.getString(Constants.serverPreference, "").also {
-                    Log.d(Constants.LOG_TAG, "Found stored $Constants.serverPreference preference: $it")
-                    _server.value = it
+                sharedPreferences.getString(Constants.serverPreference, "").let {
+                    if (! it.isNullOrEmpty()) {
+                        Log.d(Constants.LOG_TAG, "Found stored $Constants.serverPreference preference: $it")
+                        _server.value = it
+                    }
+                }
+                if (_server.value.isNullOrEmpty()) {
+                    Log.d(Constants.LOG_TAG, "No previously set serverUrl found, defaulting to: ${Constants.defaultServer}")
+                    _server.value = Constants.defaultServer
                 }
             }
-            Log.d(Constants.LOG_TAG, "Returning: $_server with value ${_server.value}")
+            //Log.d(Constants.LOG_TAG, "Returning: $_server with value ${_server.value}")
             return _server
         }
     /** Update server URL. This will both update the in-memory @_server variable in this object

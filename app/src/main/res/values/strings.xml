@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Liveness Signal</string>
+
+    <!-- Default values -->
+    <!--<string name="default_server">fng5mhuck2n7l4we2egjnbp6l4cofw46wjyvi7t6s37uhwbcanmylyqd.onion</string>-->
+
     <!-- Strings related to login -->
     <string name="prompt_server">Liveness Server</string>
     <string name="prompt_app_password">Local App Password</string>

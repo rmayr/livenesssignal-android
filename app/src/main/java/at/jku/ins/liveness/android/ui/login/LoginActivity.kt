@@ -16,6 +16,7 @@ import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 import at.jku.ins.liveness.android.ui.main.MainActivity
 import at.jku.ins.liveness.android.databinding.ActivityLoginBinding
+import info.guardianproject.netcipher.proxy.OrbotHelper
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.Security
 
@@ -48,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // initialize our runtime data singleton
         data = ProtocolRunDataRepository.getInstance(this.applicationContext)
 
         val server = binding.server
@@ -64,8 +66,7 @@ class LoginActivity : AppCompatActivity() {
                 server.setText(it)
             }
         }
-        // TODO: remove this line
-        //sharedPreferences.getString(Constants.serverPreference, "").also { server.setText(it.toString()) }
+        // and store changed data as input by user
         server.afterTextChanged {
             data.updateServer(server.text.toString())
         }

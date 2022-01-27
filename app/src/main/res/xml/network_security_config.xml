@@ -1,8 +1,11 @@
 <network-security-config>
     <!-- TODO: change to false when we have a service running -->
-    <base-config cleartextTrafficPermitted="true" />
+    <!--<base-config cleartextTrafficPermitted="true" />-->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">livenesstest.ins.jku.at</domain>
+        <domain includeSubdomains="true">.onion</domain>
+        <!-- should not be necessary, but the above line doesn't seem to include this -->
+        <domain includeSubdomains="false">fng5mhuck2n7l4we2egjnbp6l4cofw46wjyvi7t6s37uhwbcanmylyqd.onion</domain>
     </domain-config>
     <!-- Can't seem to globally allow HTTP in debug version -->
     <!--<debug-overrides cleartextTrafficPermitted="true">

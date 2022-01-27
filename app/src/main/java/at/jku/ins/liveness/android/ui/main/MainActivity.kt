@@ -42,7 +42,17 @@ class MainActivity : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
 
         // if the URL is an .onion, make sure OrBot is available
-        OrbotHelper.get(this).init()
+        val orbot = OrbotHelper.get(this.applicationContext)
+        orbot.init()
+        // check if we have Orbot installed so that we can use it
+        data.server.value?.let { if (it.contains(".onion")) {
+            Log.d(Constants.LOG_TAG, "Server URL is a Tor Onion service, checking that Orbot is installed")
+            if (! orbot.isInstalled) {
+                Log.w(Constants.LOG_TAG,"Orbot is not installed, will try to install it for Onion service communication")
+                // TODO: UI interaction: tell users what needs to be done, add callback and wait for installation
+                orbot.installOrbot(this)
+            }
+        } }
 
         // and make sure that at the end, we update our data to be ready
         if (!data.appPassword.value.isNullOrEmpty() && !data.signalPassword.value.isNullOrEmpty() && !data.server.value.isNullOrEmpty()) {

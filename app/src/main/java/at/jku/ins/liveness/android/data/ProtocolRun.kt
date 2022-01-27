@@ -7,6 +7,7 @@ import at.jku.ins.liveness.protocol.ChallengeMessage
 import at.jku.ins.liveness.protocol.RequestMessage
 import at.jku.ins.liveness.protocol.ResponseMessage
 import at.jku.ins.liveness.signals.Signal
+import info.guardianproject.netcipher.proxy.OrbotHelper
 import jakarta.ws.rs.client.Entity
 import jakarta.ws.rs.client.WebTarget
 import jakarta.ws.rs.core.MediaType
@@ -23,7 +24,6 @@ interface ProtocolRun {
     fun createClient(serverUrl: String): WebTarget {
         val config = ClientConfig()
         if (serverUrl.contains(".onion")) {
-            // TODO: check if we have Orbot installed so that we can use it
             config.property(ClientProperties.PROXY_URI, "localhost:9050")
         }
         val client = ClientBuilder.newClient(config)
