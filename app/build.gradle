@@ -27,9 +27,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     packagingOptions {
-        exclude 'META-INF/NOTICE.md'
-        exclude 'META-INF/NOTICE.markdown'
-        exclude 'META-INF/LICENSE.md'
+        resources {
+            excludes += ['META-INF/NOTICE.md', 'META-INF/NOTICE.markdown', 'META-INF/LICENSE.md']
+        }
     }
     kotlinOptions {
         jvmTarget = '1.8'
