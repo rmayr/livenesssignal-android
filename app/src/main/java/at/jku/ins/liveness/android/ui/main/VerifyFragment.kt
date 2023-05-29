@@ -52,28 +52,32 @@ class VerifyFragment(protocol: ProtocolRun) : ViewFragment(protocol) {
             verifyBtn.isEnabled = true
             protocolData = data.getNextVerifierProtocolRunData()
         }
-        data.verifierKeyData.observe(viewLifecycleOwner, {
+        data.verifierKeyData.observe(viewLifecycleOwner) {
             if (it != null && data.verifierChainData.value != null) {
                 verifyBtn.isEnabled = true
                 protocolData = data.getNextVerifierProtocolRunData()
-            }
-            else {
-                Log.e(Constants.LOG_TAG, "Observed update to verifier key/chain data with null. This should never happen.")
+            } else {
+                Log.e(
+                    Constants.LOG_TAG,
+                    "Observed update to verifier key/chain data with null. This should never happen."
+                )
                 verifyBtn.isEnabled = false
                 protocolData = null
             }
-        })
-        data.verifierChainData.observe(viewLifecycleOwner, {
+        }
+        data.verifierChainData.observe(viewLifecycleOwner) {
             if (it != null && data.verifierKeyData.value != null) {
                 verifyBtn.isEnabled = true
                 protocolData = data.getNextVerifierProtocolRunData()
-            }
-            else {
-                Log.e(Constants.LOG_TAG, "Observed update to verifier key/chain data with null. This should never happen.")
+            } else {
+                Log.e(
+                    Constants.LOG_TAG,
+                    "Observed update to verifier key/chain data with null. This should never happen."
+                )
                 verifyBtn.isEnabled = false
                 protocolData = null
             }
-        })
+        }
 
         // and use this initialized protocol data when clicking data button
         verifyBtn.setOnClickListener {

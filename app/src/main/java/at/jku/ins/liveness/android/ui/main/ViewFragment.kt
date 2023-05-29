@@ -33,16 +33,4 @@ open class ViewFragment(private val protocol: ProtocolRun) : Fragment() {
         pageViewModel.setText("Starting request ...")
         pageViewModel.runNetworkRequest(protocol, protocolData)
     }
-
-    /*companion object {
-        private var singleton: ViewFragment? = null
-
-        @JvmStatic
-        fun getInstance(protocol: ProtocolRun): ViewFragment {
-            if (singleton == null)
-                singleton = ViewFragment(protocol)
-
-            return singleton as ViewFragment
-        }
-    }*/
 }

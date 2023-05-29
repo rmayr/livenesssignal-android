@@ -86,5 +86,4 @@ class SettingsActivity : AppCompatActivity() {
         }
         finish()
     }
-
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import at.jku.ins.liveness.android.R
-import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 import at.jku.ins.liveness.android.data.SendProtocolRun
 import at.jku.ins.liveness.android.data.VerifyProtocolRun
 

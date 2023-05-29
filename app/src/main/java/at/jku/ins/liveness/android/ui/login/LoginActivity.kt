@@ -16,7 +16,6 @@ import at.jku.ins.liveness.android.data.Constants
 import at.jku.ins.liveness.android.data.ProtocolRunDataRepository
 import at.jku.ins.liveness.android.ui.main.MainActivity
 import at.jku.ins.liveness.android.databinding.ActivityLoginBinding
-import info.guardianproject.netcipher.proxy.OrbotHelper
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.Security
 
@@ -157,9 +156,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startMain(/*model: ProtocolRunData*/) {
         val intent = Intent(this, MainActivity::class.java)
-        // TODO: remove the intent parameters
-/*        intent.putExtra(Constants.intentParamAppPassword, binding.appPassword.text.toString())
-        intent.putExtra(Constants.intentParamSignalPassword, binding.signalPassword.text.toString())*/
         startActivity(intent)
     }
 }

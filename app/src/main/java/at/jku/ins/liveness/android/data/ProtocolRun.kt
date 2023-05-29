@@ -14,7 +14,6 @@ import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.NewCookie
 import jakarta.ws.rs.core.Response
 import org.glassfish.jersey.client.ClientConfig
-import org.glassfish.jersey.client.ClientProperties
 import org.glassfish.jersey.client.HttpUrlConnectorProvider
 
 
