@@ -7,25 +7,33 @@ import at.jku.ins.liveness.protocol.ChallengeMessage
 import at.jku.ins.liveness.protocol.RequestMessage
 import at.jku.ins.liveness.protocol.ResponseMessage
 import at.jku.ins.liveness.signals.Signal
-import info.guardianproject.netcipher.proxy.OrbotHelper
+import jakarta.ws.rs.client.ClientBuilder
 import jakarta.ws.rs.client.Entity
 import jakarta.ws.rs.client.WebTarget
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.NewCookie
 import jakarta.ws.rs.core.Response
-import jakarta.ws.rs.client.ClientBuilder
-import org.glassfish.jersey.client.ClientProperties
 import org.glassfish.jersey.client.ClientConfig
+import org.glassfish.jersey.client.ClientProperties
+import org.glassfish.jersey.client.HttpUrlConnectorProvider
+
 
 /** This class implements the general network protocol to interact with a singal server. */
 interface ProtocolRun {
     abstract suspend fun makeRequest(viewModel: PageViewModel, data: ProtocolRunData): Result<SuccessOutput>
 
     fun createClient(serverUrl: String): WebTarget {
-        val config = ClientConfig()
-        if (serverUrl.contains(".onion")) {
-            config.property(ClientProperties.PROXY_URI, "localhost:9050")
+        // prepare Socks proxy config even if we don't use it because the overhead is minimal and scopes/lifetimes are easier this way
+        val connectionFactory =  SocksConnectionFactory("localhost", 9050)
+        val connectorProvider = HttpUrlConnectorProvider()
+        connectorProvider.connectionFactory(connectionFactory)
+
+        val config = if (serverUrl.contains(".onion")) {
+            ClientConfig().connectorProvider(connectorProvider)
         }
+        else
+            ClientConfig()
+
         val client = ClientBuilder.newClient(config)
         return client.target(serverUrl)
     }
