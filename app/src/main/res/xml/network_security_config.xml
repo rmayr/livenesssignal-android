@@ -1,5 +1,4 @@
 <network-security-config>
-    <!-- TODO: change to false when we have a service running -->
     <!--<base-config cleartextTrafficPermitted="true" />-->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">livenesstest.ins.jku.at</domain>

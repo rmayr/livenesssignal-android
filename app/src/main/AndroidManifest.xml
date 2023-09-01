@@ -21,7 +21,7 @@
         <!--android:parentActivityName="at.jku.ins.liveness.android.ui.main.MainActivity"-->
         <activity
             android:name="at.jku.ins.liveness.android.ui.main.SettingsActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_settings" />
 
         <activity
