@@ -1,0 +1,18 @@
+[remote "origin"]
+        url = git@git.ins.jku.at:rene/liveness-android.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+        pushurl = git@git.ins.jku.at:rene/liveness-android.git
+        pushurl = git@github.com:rmayr/livenesssignal-android.git
+[remote "github"]
+        url = git@github.com:rmayr/livenesssignal-android.git
+        fetch = +refs/heads/*:refs/remotes/github/*
+        pushurl = git@git.ins.jku.at:rene/liveness-android.git
+        pushurl = git@github.com:rmayr/livenesssignal-android.git
+[remote "both"]
+        url = git@git.ins.jku.at:rene/liveness-android.git
+        url = git@github.com:rmayr/livenesssignal-android.git
+[branch "master"]
+        remote = both
+        merge = refs/heads/master
+[remotes]
+    both = origin, github
