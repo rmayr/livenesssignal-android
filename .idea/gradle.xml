@@ -9,8 +9,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="/earth-data/home/rene/amw/src/android/LivenessSignal" />
+            <option value="/earth-data/home/rene/amw/src/android/LivenessSignal/app" />
           </set>
         </option>
       </GradleProjectSettings>
