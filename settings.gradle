@@ -3,6 +3,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://git.ins.jku.at/api/v4/projects/542/packages/maven"
+            name "GitLab"
+        }
     }
 }
 rootProject.name = "Liveness Signal"

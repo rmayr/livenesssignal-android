@@ -62,6 +62,11 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun startLegal(menuItem: MenuItem?) {
+        val intent = Intent(this, LegalActivity::class.java)
+        startActivity(intent)
+    }
+
     fun updateVerifierInitialSignalData(initialSignalData: ByteArray) {
         (sectionsPagerAdapter.getItem(0) as VerifyFragment).updateInitialSignalData(initialSignalData)
     }
