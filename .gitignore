@@ -9,7 +9,8 @@
 /.idea/assetWizardSettings.xml
 /.idea/misc.xml
 /.idea/deploymentTargetDropDown.xml
-.idea/runConfigurations.xml
+/.idea/kotlinc.xml
+/.idea/runConfigurations.xml
 .DS_Store
 /build
 /app/release
